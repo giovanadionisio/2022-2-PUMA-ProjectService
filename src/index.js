@@ -19,11 +19,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/', (req,res) =>{
-    res.json({
-        Project: "Puma",
-        Service: "Project-Service"
-    })
-})
+app.use('/', (req, res) => {
+  res.json({
+    Project: 'Puma',
+    Service: 'Project-Service',
+  });
+});
 
-app.listen(3000)
+app.listen(3000);
