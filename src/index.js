@@ -1,9 +1,20 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 const express = require('express');
 const cors = require('cors');
-const db = require('../dbconfig/dbConfig')
+const environment = require('./config/environment');
+// eslint-disable-next-line no-unused-vars
+const db = require('../dbconfig/dbConfig');
 
-var app = express()
-app.use(cors())
+environment.configEnv();
+
+const app = express();
+
+const corsOptions = {
+  origin: `${global.URL_API}`,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
