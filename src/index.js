@@ -9,7 +9,7 @@ const db = require('../dbconfig/dbConfig');
 environment.configEnv();
 
 const app = express();
-
+app.disable('x-powered-by');
 const corsOptions = {
   origin: `${global.URL_API}`,
 };
