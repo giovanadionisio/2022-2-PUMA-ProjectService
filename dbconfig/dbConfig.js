@@ -16,7 +16,9 @@ const pool = new Pool({
 while (tries > 0) {
   try {
     pool.query("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'", (err, res) => {
-      if (err) console.log(err);
+      if (err) {
+        console.log(err);
+      }
       else if (!res.rowCount) {
         console.log('Database not found');
         console.log('Creating');
@@ -33,7 +35,9 @@ while (tries > 0) {
         throw new Error('\x1b[33mFaulty database in project\n\x1b[33mDelete dbdata and start project again');
       }
 
-      else console.log('Database \x1b[32mOK\x1b[0m');
+      else {
+        console.log('Database \x1b[32mOK\x1b[0m');
+      }
     });
     break;
   } catch (err) {
