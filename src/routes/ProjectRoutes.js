@@ -12,12 +12,11 @@ routes.get('/alocated/:subjectId', (req, res) => {
     db.query("SELECT p.projectId, p.name FROM PROJECT p\
               WHERE p.subjectId = $1 AND p.status = 'Aguardando aprovacao';",
               [subjectId]).then(response => {
-                res.json(response.rows)
+                res.status(200).json(response.rows)
               })
   }
   else{
-    res.status = 401
-    res.json({'satus': 'Fail', 'message': 'param given is not integer'})
+    res.status(401).json({'satus': 'Fail', 'message': 'param given is not integer'})
   }
 });
 
@@ -31,7 +30,7 @@ routes.get('/project/:projectId', (req, res) => {
                 WHERE p.projectId = $1;",
               [projectId]).then(response => {
                 console.log(response)
-                res.json(response.rows)
+                res.json(response.rows[0])
               })
   }
   else{
