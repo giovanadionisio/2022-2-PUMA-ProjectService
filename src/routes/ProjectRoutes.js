@@ -20,6 +20,24 @@ routes.get('/alocated/:subjectId', (req, res) => {
   }
 });
 
+routes.put('/alocated/status', (req, res) => {
+  const proposal = req.body.proposal;
+  if('projectId' in proposal && 'approved' in proposal){
+    const stats = proposal.approved ? 'Aprovado' : 'Recusado'
+    db.query("UPDATE PROJECT SET status = $1 WHERE projectId = $2",
+              [stats, proposal.projectId]).then(response => {
+                if(response.rowCount == 0)
+                  res.status(404).json({'message': 'Project not found'});
+                else {
+                  res.status(201).json({'message': 'Project updated'})
+                }
+              })
+  }
+  else{
+    res.status(400).json({'status': 'Fail', 'message': "Request body doesn't match the expected"})
+  }
+});
+
 routes.get('/project/:projectId', (req, res) => {
   const projectId = parseInt(req.params.projectId)
 
@@ -37,6 +55,6 @@ routes.get('/project/:projectId', (req, res) => {
     res.status = 401
     res.json({'satus': 'Fail', 'message': 'param given is not integer'})
   }
-})
+});
 
 module.exports = routes;
