@@ -47,7 +47,17 @@ routes.get('/project/:projectId', (req, res) => {
                 INNER JOIN COMMON_USER u ON u.userId = p.userId\
                 WHERE p.projectId = $1;",
               [projectId]).then(response => {
-                res.json(response.rows[0])
+                db.query("SELECT ka.knowledgeArea, sa.description\
+                            FROM KNOWLEDGE_AREA ka\
+                            INNER JOIN SUBAREA sa\
+                              ON sa.knowledgeAreaId=ka.knowledgeAreaId\
+                            INNER JOIN has\
+                              ON sa.subAreaId= has.subAreaId\
+                            WHERE has.projectId = $1;", [projectId]).then(resAreas =>{
+                              let result = response.rows[0];
+                              result['areas'] = resAreas.rows;
+                              res.json(result)
+                            })
               })
   }
   else{
@@ -56,4 +66,4 @@ routes.get('/project/:projectId', (req, res) => {
   }
 });
 
-module.exports = routes;
+module.exports = routes
