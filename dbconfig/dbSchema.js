@@ -109,8 +109,7 @@ module.exports = Object.freeze({
 
     CONSTRAINT SUBAREA_PK PRIMARY KEY (subAreaId),
     CONSTRAINT SUBAREA_KNOWLEDGE_AREA_FK FOREIGN KEY (knowledgeAreaId)
-      REFERENCES KNOWLEDGE_AREA (knowledgeAreaId),
-    CONSTRAINT SUBAREA_UK UNIQUE (description, knowledgeAreaId)
+      REFERENCES KNOWLEDGE_AREA (knowledgeAreaId)
   );
 
   CREATE TABLE has (

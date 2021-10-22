@@ -42,18 +42,18 @@ routes.get('/project/:projectId', (req, res) => {
   const projectId = parseInt(req.params.projectId)
 
   if(functions.checkInt(projectId)){
-    db.query("SELECT p.name, p.problem, p.expectedResult, u.fullName, u.phoneNumber\
+    db.query('SELECT p.name, p.problem, p.expectedResult, u.fullName, u.phoneNumber\
               FROM PROJECT p\
                 INNER JOIN COMMON_USER u ON u.userId = p.userId\
-                WHERE p.projectId = $1;",
-              [projectId]).then(response => {
-                db.query("SELECT ka.knowledgeArea, sa.description\
+                WHERE p.projectId = $1;',
+              [projectId]).then((response) => {
+                db.query('SELECT ka.knowledgeArea, sa.description\
                             FROM KNOWLEDGE_AREA ka\
                             INNER JOIN SUBAREA sa\
                               ON sa.knowledgeAreaId=ka.knowledgeAreaId\
                             INNER JOIN has\
                               ON sa.subAreaId= has.subAreaId\
-                            WHERE has.projectId = $1;", [projectId]).then(resAreas =>{
+                            WHERE has.projectId = $1;', [projectId]).then((resAreas) =>{
                               let result = response.rows[0];
                               result['areas'] = resAreas.rows;
                               res.json(result)
@@ -64,6 +64,12 @@ routes.get('/project/:projectId', (req, res) => {
     res.status = 401
     res.json({'satus': 'Fail', 'message': 'param given is not integer'})
   }
+});
+
+routes.get('/subject', (req, res) => {
+  db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
+    res.json(response.rows);
+  })
 });
 
 module.exports = routes
