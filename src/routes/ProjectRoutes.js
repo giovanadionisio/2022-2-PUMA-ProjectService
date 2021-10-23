@@ -20,7 +20,7 @@ routes.get('/alocated/:subjectId', (req, res) => {
   }
 });
 
-routes.put('/alocated/status', (req, res) => {
+routes.put('/alocate/:proposalId/status', (req, res) => {
   const proposal = req.body.proposal;
   if('projectId' in proposal && 'approved' in proposal){
     const stats = proposal.approved ? 'Aprovado' : 'Recusado'
@@ -70,6 +70,24 @@ routes.get('/subject', (req, res) => {
   db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
     res.json(response.rows);
   })
+});
+
+routes.put('/proposal/:projectId', (req, res) => {
+  const projId = parseInt(req.params.projectId);
+  const subjectId = req.body.subjectId;
+
+  if(functions.checkInt(projId)) {
+      db.query('UPDATE PROJECT SET subjectId = $1 WHERE projectId = $2',
+                [subjectId, projId]).then((response) => {
+                  res.status(200).json({message: 'Alterado com sucesso'})
+                }).catch((err) => {
+                  res.status(400).json(err.message)
+                });
+  }
+  else {
+    res.status(400).json({'satus': 'Fail', 'message': 'param given is not integer'})
+  }
+
 });
 
 module.exports = routes
