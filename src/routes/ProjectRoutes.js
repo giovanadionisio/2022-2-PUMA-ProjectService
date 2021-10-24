@@ -21,11 +21,14 @@ routes.get('/alocated/:subjectId', (req, res) => {
 });
 
 routes.put('/alocate/:proposalId/status', (req, res) => {
+  console.log('cheguei aqui');
   const proposal = req.body.proposal;
-  if('projectId' in proposal && 'approved' in proposal){
+  if('approved' in proposal){
     const stats = proposal.approved ? 'Aprovado' : 'Recusado'
-    db.query("UPDATE PROJECT SET status = $1 WHERE projectId = $2",
-              [stats, proposal.projectId]).then(response => {
+    console.log(`entrei - ${stats}`);
+    db.query("UPDATE PROJECT SET status=$1 WHERE projectid = $2",
+              [stats, req.params.proposalId]).then(response => {
+                console.log(response);
                 if(response.rowCount == 0)
                   res.status(404).json({'message': 'Project not found'});
                 else {
@@ -74,9 +77,9 @@ routes.get('/subject', (req, res) => {
 
 routes.put('/proposal/:projectId', (req, res) => {
   const projId = parseInt(req.params.projectId);
-  const subjectId = req.body.subjectId;
+  const subjectId = parseInt(req.body.subjectId);
 
-  if(functions.checkInt(projId)) {
+  if(functions.checkInt(projId) && functions.checkInt(subjectId)) {
       db.query('UPDATE PROJECT SET subjectId = $1 WHERE projectId = $2',
                 [subjectId, projId]).then((response) => {
                   res.status(200).json({message: 'Alterado com sucesso'})
