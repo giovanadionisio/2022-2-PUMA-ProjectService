@@ -178,47 +178,28 @@ function getKnowledgeAreas() {
 
 }
 
-
-
-
 function addProjectKnowledgeAreasRelation(projectId, knowledgeAreas) {
-
+  
   const areas = [];
-
-
-
-
+  let iterations = 0;
   knowledgeAreas.forEach((area) => {
-
-    areas.push([area.knoledgeareaid, projectId]);
-
+    areas.push([area.knowledgeareaid, projectId]);
   });
-
-
-
-
+  
   return new Promise((resolve, reject) => {
-
     areas.forEach((area) => {
-
+      iterations++;
       db.query(
-
-        'INSERT INTO HAS (knoledgeareaid, projectid) VALUES ($1,$2) RETURNING *', [area[0], area[1]],
-
-      ).then((response) => {
-
-        resolve(response);
-
+        'INSERT INTO has (subAreaId, projectid) VALUES ($1,$2) RETURNING *', [area[0], area[1]],
+      ).then(() => {
+        if(--iterations == 0) {
+          resolve();
+        }
       }).catch((response) => {
-
         reject(response);
-
       });
-
     });
-
   });
-
 }
 
 
