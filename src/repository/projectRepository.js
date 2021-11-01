@@ -4,6 +4,9 @@ const db = require('../../dbconfig/dbConfig');
 
 
 function addProject(project) {
+  
+  //Para testagem enquanto não existe alocação:
+  project.status = 'Aguardando aprovacao';
 
   return new Promise((resolve, reject) => {
 
