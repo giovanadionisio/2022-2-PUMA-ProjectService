@@ -20,6 +20,22 @@ routes.get('/alocated/:subjectId', (req, res) => {
   }
 });
 
+routes.get('/userProposals/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  if (functions.checkInt(userId)) {
+    projectController.getUserProposals(userId).then((response) => {
+      res.status(200).json(response);
+    }).catch((error) => {
+      console.log(error);
+      res.status(400).json(error);
+    });
+  }
+  else {
+    res.status(401).json({ 'satus': 'Fail', 'message': 'param given is not integer' })
+  }
+});
+
 routes.put('/alocate/:proposalId/status', (req, res) => {
   console.log('cheguei aqui');
   const proposal = req.body.proposal;
