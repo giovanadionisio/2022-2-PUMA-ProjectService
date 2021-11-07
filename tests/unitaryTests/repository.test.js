@@ -8,7 +8,7 @@ const { projectMock } = constants;
 const { fileMock } = constants;
 const knowledgeAreasMock = constants.knowledgeAreasMock;
 
-describe('Add Project', () => {
+describe('src/repository/projectRepository -> Add Project', () => {
   it('should add a project', (done) => {
     repository.addProject(projectMock).then((response) => {
       assert.equal(typeof (response), 'number');
@@ -25,7 +25,7 @@ describe('Add Project', () => {
 });
 });
 
-describe('Get user proposal', () => {
+describe('src/repository/projectRepository -> Get user proposal', () => {
   it('should get a user proposal', (done) => {
     repository.getUserProposals(1).then((response) => {
       assert.equal(typeof (response), 'object');
@@ -34,7 +34,7 @@ describe('Get user proposal', () => {
   });
 });
 
-describe('Add a file', () => {
+describe('src/repository/projectRepository -> Add a file', () => {
 it('should add a file', (done) => {
   repository.addFile(fileMock).then((response) => {
     assert.equal(typeof (response), 'number');
@@ -51,7 +51,7 @@ it('should not add a file', (done) => {
 });
 });
 
-describe('Retrieve projects', () => {
+describe('src/repository/projectRepository -> Retrieve projects', () => {
 it('should retrieve all the projects', (done) => {
   repository.retriveProjects().then((response) => {
     assert.equal(typeof (response), 'object');
@@ -67,7 +67,7 @@ it('should retrieve a project', (done) => {
 });
 
 
-describe('Delete projects', () => {
+describe('src/repository/projectRepository -> Delete projects', () => {
 it('should delete a project', (done) => {
   repository.deleteProject(2).then((response) => {
     assert.equal(typeof (response), 'object');
@@ -77,7 +77,7 @@ it('should delete a project', (done) => {
 
 });
 
-describe('Knowledge areas', () => {
+describe('src/repository/projectRepository -> Knowledge areas', () => {
 it('should retrieve all knowledge areas', (done) => {
   repository.getKnowledgeAreas().then((response) => {
     assert.equal(typeof (response), 'object');
