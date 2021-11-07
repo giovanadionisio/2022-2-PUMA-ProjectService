@@ -2,7 +2,14 @@ const db = require('../../dbconfig/dbConfig');
 
 module.exports = {
   getUserProposals: async (userId) => {
-    return (await db.query('SELECT * FROM PROJECT WHERE userid = $1', [userId])).rows;
+    return new Promise((resolve, reject) => {
+      db.query('SELECT * FROM PROJECT WHERE userid = $1', [userId]
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
   },
 
   addProject: (project) => {
@@ -100,15 +107,17 @@ module.exports = {
     knowledgeAreas.forEach((area) => {
       areas.push([area.knowledgeareaid, projectId]);
     });
-
     return new Promise((resolve, reject) => {
+      if(areas.length == 0){
+        reject({error: "Missing knowledge areas", severity: "ERROR"});
+      }
       areas.forEach((area) => {
         iterations++;
         db.query(
           'INSERT INTO has (subAreaId, projectid) VALUES ($1,$2) RETURNING *', [area[0], area[1]],
-        ).then(() => {
+        ).then((response) => {
           if (--iterations == 0) {
-            resolve();
+            resolve(response.rows[0]);
           }
         }).catch((response) => {
           reject(response);

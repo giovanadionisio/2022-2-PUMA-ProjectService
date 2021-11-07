@@ -8,8 +8,6 @@ services:
             POSTGRES_USER: ${DB_USER}
             POSTGRES_DB: ${DB}
             DATABASE_URL: ${DB_URL}
-        volumes:
-            - ./dbdata:/var/lib/postgresql/data
         ports:
             - "5432:5432"
         networks:
@@ -28,6 +26,8 @@ services:
         volumes:
             - ./:/app
             - /app/node_modules
+        command:
+            ["./wait-for-it.sh", "db-test:5432", "--", "npm","run","start-dev"]
         networks:
             - puma-network
           
