@@ -9,7 +9,6 @@ const { fileMock } = constants;
 describe('src/controller/ProjectController -> Project', () =>{
   it('should add a project', (done) => {
       controller.addProject(mockProject).then((response) => {
-
         assert.equal(typeof (response), 'number');
         done();
       }).catch((err) => {
