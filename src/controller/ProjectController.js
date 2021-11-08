@@ -14,8 +14,14 @@ module.exports = {
     })
   },
   
-  getUserProposals: async (userId) => {
-    return projectRepository.getUserProposals(userId);
+  getUserProposals: (userId) => {
+    return new Promise((resolve, reject) => {
+      projectRepository.getUserProposals(userId).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error)
+        });
+    })
   },
 
   addFile: (file) => {

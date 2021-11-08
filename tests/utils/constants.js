@@ -6,6 +6,11 @@ module.exports = {
     status: 'Em alocacao',
     userid: 1,
     subjectid: 1,
+    knowledgeareas:[
+    {
+      knowledgeareaid: 1
+    },
+    ]
   },
   fileMock: {
     filename: 'mockFile',

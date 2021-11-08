@@ -25,7 +25,7 @@ describe('src/repository/projectRepository -> Add Project', () => {
 });
 });
 
-describe('src/repository/projectRepository -> Get user proposal', () => {
+describe('src/repository/projectRepository -> User proposal', () => {
   it('should get a user proposal', (done) => {
     repository.getUserProposals(1).then((response) => {
       assert.equal(typeof (response), 'object');
@@ -99,7 +99,6 @@ it('should not add knowledge area to project', (done) => {
     console.log(response);
     done(new Error(response));
   }).catch((error) => {
-    console.log(error);
     assert.equal(error.severity, 'ERROR');
     done();
   });
