@@ -7,7 +7,7 @@ services:
             POSTGRES_PASSWORD: ${DB_PASS}
             POSTGRES_USER: ${DB_USER}
             POSTGRES_DB: ${DB}
-            DATABASE_URL: ${DB_URL}
+            DATABASE_URL: ${DB_URL_TEST}
         ports:
             - "5432:5432"
         networks:
@@ -20,14 +20,14 @@ services:
             context: .
             dockerfile: dev.Dockerfile
         ports:
-            - "3001:3001"
+            - "3000:3000"
         depends_on:
             - db-test
         volumes:
             - ./:/app
             - /app/node_modules
         command:
-            ["./wait-for-it.sh", "db-test:5432", "--", "npm","run","start-dev"]
+            ["./wait-for-it.sh", "db:5432", "--", "npm","run","start"]
         networks:
             - puma-network
           
