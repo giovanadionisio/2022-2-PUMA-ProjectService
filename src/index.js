@@ -13,7 +13,8 @@ environment.configEnv();
 const app = express();
 app.disable('x-powered-by');
 const corsOptions = {
-  origin: `${global.URL_API}`,
+  // origin: `${global.URL_API}`,
+  origin: '*',
 };
 
 app.use(cors(corsOptions));
