@@ -24,4 +24,9 @@ app.use(express.urlencoded({ limit: '100mb' }));
 
 configRoutes(app)
 
-app.listen(3000);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on PORT: ${PORT}`);
+});
+
