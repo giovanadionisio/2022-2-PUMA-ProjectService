@@ -1,20 +1,26 @@
 require('dotenv').config();
 const { Pool } = require('pg');
+const dbSchema = require('./dbSchema');
 const environment = require('../src/config/environment.config');
 
 environment.configEnv();
-const connectionString = global.DB_URL;
-
-const dbSchema = require('./dbSchema');
 
 let tries = 5;
 
-const pool = new Pool({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const connectionString = global.DB_URL;
+
+let settings = { connectionString };
+
+if (process.env.ENVIRONMENT === 'test') {
+  settings = {
+    ...settings,
+    ssl: {
+      rejectUnauthorized: false,
+    }
+  }
+}
+
+const pool = new Pool(settings);
 
 while (tries > 0) {
   try {
