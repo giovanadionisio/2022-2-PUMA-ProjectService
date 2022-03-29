@@ -13,7 +13,6 @@ module.exports = {
   },
 
   addProject: (project) => {
-    //Para testagem enquanto não existe alocação:
     return new Promise((resolve, reject) => {
       db.query(
         `INSERT INTO PROJECT(name,problem,expectedresult,status,userid,subjectid,createdat) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
@@ -130,7 +129,7 @@ module.exports = {
       for (let i = 0; i < keywords.length; i++) {
         db.query(
           `INSERT INTO ABSTRACTS(keywordid,projectid,main) VALUES ($1,$2, $3) RETURNING *`,
-          [keywords[i].keywordid, projectid, false],
+          [keywords[i].keywordid, projectid, false], // there are no "main" keywords
         ).then(() => {
           if (i === keywords.length - 1) {
             resolve(projectid);

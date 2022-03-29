@@ -43,7 +43,6 @@ routes.get('/userProposals/:userId', (req, res) => {
 });
 
 routes.put('/alocate/:proposalId/status', (req, res) => {
-  console.log('cheguei aqui');
   const { proposal } = req.body;
   if ('approved' in proposal) {
     const stats = proposal.approved ? 'Aprovado' : 'Recusado';

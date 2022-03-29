@@ -1,14 +1,14 @@
 const projectRepository = require('../repository/projectRepository');
 const alocateService = require('../service/AlocateService');
+
 module.exports = {
   addProject: (project) => {
     return new Promise((resolve, reject) => {
       alocateService.getSubject(project.keywords).then((response) => {
         project.subjectid = response.data.subjectid;
-        project.status = 'SB'
-        project.createdat = new Date().toISOString();
-        projectRepository.addProject(project).then((response) => {
-          projectRepository.addProjectKeywordsRelation(response, project.keywords).then((response) => {
+        project.userid = 1; // insert userService here to get userid dynamically
+        projectRepository.addProject(project).then((projectid) => {
+          projectRepository.addProjectKeywordsRelation(projectid, project.keywords).then((response) => {
             resolve(response);
           }).catch((e) => reject(e));
         }).catch((e) => reject(e));
@@ -20,9 +20,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       projectRepository.getUserProposals(userId).then((response) => {
         resolve(response);
-      }).catch((error) => {
-        reject(error)
-        });
+      }).catch((error) => { reject(error) });
     })
   },
 
@@ -31,9 +29,7 @@ module.exports = {
       try {
         const projectId = projectRepository.addFile(file);
         resolve(projectId);
-      } catch (e) {
-        reject(e);
-      }
+      } catch (e) { reject(e); }
       resolve();
     })
   },
@@ -43,9 +39,7 @@ module.exports = {
       try {
         const response = projectRepository.deleteProject(projectId);
         resolve(response);
-      } catch (e) {
-        reject(e);
-      }
+      } catch (e) { reject(e); }
       resolve();
     });
   },
@@ -55,9 +49,7 @@ module.exports = {
       try {
         const response = projectRepository.getKnowledgeAreas();
         resolve(response);
-      } catch (e) {
-        reject(e);
-      }
+      } catch (e) { reject(e); }
       resolve();
     });
   }
