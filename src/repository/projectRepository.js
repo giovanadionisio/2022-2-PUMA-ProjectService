@@ -3,7 +3,7 @@ const db = require('../../dbconfig/dbConfig');
 module.exports = {
   getUserProposals: async (userId) => {
     return new Promise((resolve, reject) => {
-      db.query('SELECT * FROM PROJECT WHERE userid = $1', [userId]
+      db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, s.name AS subject FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid WHERE userid = $1 ORDER BY p.projectid DESC', [userId]
       ).then((response) => {
         resolve(response.rows);
       }).catch((response) => {
