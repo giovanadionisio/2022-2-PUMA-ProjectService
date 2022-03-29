@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 const express = require('express');
+
 const cors = require('cors');
 const environment = require('./config/environment.config');
 const configRoutes = require('./routes/router');

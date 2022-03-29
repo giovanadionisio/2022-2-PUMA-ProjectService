@@ -118,7 +118,6 @@ routes.post('/upload', async (req, res) => {
 });
 
 routes.post('/project', (req, res) => { // Falta tratamento dos dados
-  console.log(req.body);
   projectController.addProject(req.body).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {

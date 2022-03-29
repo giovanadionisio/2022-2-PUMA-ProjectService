@@ -14,16 +14,15 @@ module.exports = {
 
   addProject: (project) => {
     //Para testagem enquanto não existe alocação:
-    project.status = 'Aguardando aprovacao';
     return new Promise((resolve, reject) => {
       db.query(
-        `INSERT INTO PROJECT(name,problem,expectedresult,status,userid,subjectid) 
-        VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-        [
-          project.name, project.problem, project.expectedresult,
-          project.status, project.userid, project.subjectid,
-        ],
-      ).then((response) => resolve(response.rows[0].projectid)).catch((response) => reject(response));
+        `INSERT INTO PROJECT(name,problem,expectedresult,status,userid,subjectid,createdat) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+        [project.name, project.problem, project.expectedresult, project.status, project.userid, project.subjectid, project.createdat],
+      ).then((response) => {
+          resolve(response.rows[0].projectid);
+      }).catch((response) => {
+        reject(response);
+      });
     });
   },
 
@@ -124,5 +123,24 @@ module.exports = {
         });
       });
     });
-  }
+  },
+
+  addProjectKeywordsRelation: (projectid, keywords) => {
+    return new Promise((resolve, reject) => {
+      console.log(projectid);
+      console.log(keywords);
+      for (let i = 0; i < keywords.length; i++) {
+        db.query(
+          `INSERT INTO ABSTRACTS(keywordid,projectid,main) VALUES ($1,$2, $3) RETURNING *`,
+          [keywords[i].keywordid, projectid, false],
+        ).then((response) => {
+          if (i === keywords.length - 1) {
+            resolve(projectid);
+          }
+        }).catch((response) => {
+          reject(response);
+        });
+      }
+    });
+  },
 }

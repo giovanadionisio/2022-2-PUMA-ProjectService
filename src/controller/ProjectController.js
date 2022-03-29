@@ -1,19 +1,21 @@
 const projectRepository = require('../repository/projectRepository');
-
+const alocateService = require('../service/AlocateService');
 module.exports = {
   addProject: (project) => {
     return new Promise((resolve, reject) => {
-      projectRepository.addProject(project).then((response) => {
-        projectRepository.addProjectKnowledgeAreasRelation(
-          response,
-          project.knowledgeareas,
-        ).then(() => {
-          resolve(response);
-        });
-      }).catch((e) => reject(e));
+      alocateService.getSubject(project.keywords).then((response) => {
+        project.subjectid = response.data.subjectid;
+        project.status = 'SB'
+        project.createdat = new Date().toISOString();
+        projectRepository.addProject(project).then((response) => {
+          projectRepository.addProjectKeywordsRelation(response, project.keywords).then((response) => {
+            resolve(response);
+          }).catch((e) => reject(e));
+        }).catch((e) => reject(e));
+      }).catch((e) => { reject(e) });
     })
   },
-  
+
   getUserProposals: (userId) => {
     return new Promise((resolve, reject) => {
       projectRepository.getUserProposals(userId).then((response) => {
@@ -35,7 +37,7 @@ module.exports = {
       resolve();
     })
   },
-  
+
   deleteProject: (projectId) => {
     return new Promise((resolve, reject) => {
       try {
@@ -47,7 +49,7 @@ module.exports = {
       resolve();
     });
   },
-  
+
   getKnowledgeAreas: () => {
     return new Promise((resolve, reject) => {
       try {
