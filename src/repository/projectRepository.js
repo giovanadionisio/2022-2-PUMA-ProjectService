@@ -127,13 +127,11 @@ module.exports = {
 
   addProjectKeywordsRelation: (projectid, keywords) => {
     return new Promise((resolve, reject) => {
-      console.log(projectid);
-      console.log(keywords);
       for (let i = 0; i < keywords.length; i++) {
         db.query(
           `INSERT INTO ABSTRACTS(keywordid,projectid,main) VALUES ($1,$2, $3) RETURNING *`,
           [keywords[i].keywordid, projectid, false],
-        ).then((response) => {
+        ).then(() => {
           if (i === keywords.length - 1) {
             resolve(projectid);
           }
