@@ -61,15 +61,18 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
 
 routes.get('/project/:projectId', (req, res) => {
   const projectId = parseInt(req.params.projectId);
-
   if (functions.checkInt(projectId)) {
     db.query('SELECT p.* FROM PROJECT p WHERE p.projectid = $1',
     [projectId]).then((response) => {
       const result = response.rows[0];
-      db.query('SELECT k.* FROM KEYWORD k JOIN abstracts a on k.keywordid = a.keywordid AND a.projectid = $1', [projectId]).then((response) => {
-        result.keywords = response.rows;
-        res.json(result);
-      });
+      if (!result) {
+        res.status(400).json({ message: `Projeto de id ${projectId} não encontrado` });
+      } else {
+        db.query('SELECT k.* FROM KEYWORD k JOIN abstracts a on k.keywordid = a.keywordid AND a.projectid = $1', [projectId]).then((response) => {
+          result.keywords = response.rows;
+          res.json(result);
+        });
+      }
     });
   } else {
     res.status = 401;
