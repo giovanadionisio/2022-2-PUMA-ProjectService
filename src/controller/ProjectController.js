@@ -6,7 +6,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       alocateService.getSubject(project.keywords).then((response) => {
         project.subjectid = response.data.subjectid;
-        project.userid = 1; // insert userService here to get userid dynamically
         projectRepository.addProject(project).then((projectid) => {
           projectRepository.addProjectKeywordsRelation(projectid, project.keywords).then((response) => {
             resolve(response);
@@ -16,9 +15,9 @@ module.exports = {
     })
   },
 
-  getUserProposals: (userId) => {
+  getUserProposals: (user) => {
     return new Promise((resolve, reject) => {
-      projectRepository.getUserProposals(userId).then((response) => {
+      projectRepository.getUserProposals(user).then((response) => {
         resolve(response);
       }).catch((error) => { reject(error) });
     })

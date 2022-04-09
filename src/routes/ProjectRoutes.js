@@ -29,9 +29,9 @@ routes.get('/alocated/:subjectId', (req, res) => {
 
 routes.get('/userProposals/:userId', (req, res) => {
   const userId = parseInt(req.params.userId);
-
+  const user = req.query;
   if (functions.checkInt(userId)) {
-    projectController.getUserProposals(userId).then((response) => {
+    projectController.getUserProposals(user).then((response) => {
       res.status(200).json(response);
     }).catch((error) => {
       console.log(error);

@@ -1,13 +1,21 @@
 const db = require('../../dbconfig/dbConfig');
+const { response } = require('express');
 
 module.exports = {
-  getUserProposals: async (userId) => {
+  getUserProposals: async (user) => {
     return new Promise((resolve, reject) => {
-      db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE cu.userid = $1 ORDER BY p.projectid DESC', [userId]
-      ).then((response) => {
+      let result = new Promise(() => {});
+      if (user.operation === 'projetos') {
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid ORDER BY p.projectid DESC');
+      } else if (user.operation === 'projetos-disciplina') {
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE p.subjectid IN (SELECT DISTINCT s.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber INNER JOIN semester s ON s.semesterid = l.semesterid WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
+      } else {
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE p.userid = $1 ORDER BY p.projectid DESC', [user.userId]);
+      }
+      result.then((response) => {
         resolve(response.rows);
       }).catch((response) => {
-        reject(response);
+          reject(response);
       });
     });
   },
