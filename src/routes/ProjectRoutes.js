@@ -134,6 +134,14 @@ routes.get('/areas-conhecimento', (req, res) => {
   });
 });
 
+routes.get('/palavra-chave', (req, res) => {
+  projectController.getKeywords().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
 routes.get('/project/consulta', () => {
   db.query('SELECT * FROM PROJECT').then((res) => {
     res.json(res.rows);

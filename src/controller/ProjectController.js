@@ -1,17 +1,15 @@
 const projectRepository = require('../repository/projectRepository');
-const alocateService = require('../service/AlocateService');
+const { simplifiedAllocation } = require('../utils/functions');
 
 module.exports = {
   addProject: (project) => {
     return new Promise((resolve, reject) => {
-      alocateService.getSubject(project.keywords).then((response) => {
-        project.subjectid = response.data.subjectid;
-        projectRepository.addProject(project).then((projectid) => {
-          projectRepository.addProjectKeywordsRelation(projectid, project.keywords).then((response) => {
-            resolve(response);
-          }).catch((e) => reject(e));
+      project.subjectid = simplifiedAllocation(project.keywords).subjectid;
+      projectRepository.addProject(project).then((projectid) => {
+        projectRepository.addProjectKeywordsRelation(projectid, project.keywords).then((response) => {
+          resolve(response);
         }).catch((e) => reject(e));
-      }).catch((e) => { reject(e) });
+      }).catch((e) => reject(e));
     })
   },
 
@@ -42,7 +40,6 @@ module.exports = {
       resolve();
     });
   },
-
   getKnowledgeAreas: () => {
     return new Promise((resolve, reject) => {
       try {
@@ -51,5 +48,15 @@ module.exports = {
       } catch (e) { reject(e); }
       resolve();
     });
-  }
+  },
+  getKeywords: () => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(projectRepository.getKeywords());
+      } catch (e) {
+        reject(e);
+      }
+      resolve();
+    });
+  },
 };
