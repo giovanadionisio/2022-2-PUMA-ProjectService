@@ -29,9 +29,9 @@ routes.get('/alocated/:subjectId', (req, res) => {
 
 routes.get('/userProposals/:userId', (req, res) => {
   const userId = parseInt(req.params.userId);
-
+  const user = req.query;
   if (functions.checkInt(userId)) {
-    projectController.getUserProposals(userId).then((response) => {
+    projectController.getUserProposals(user).then((response) => {
       res.status(200).json(response);
     }).catch((error) => {
       console.log(error);
@@ -43,7 +43,6 @@ routes.get('/userProposals/:userId', (req, res) => {
 });
 
 routes.put('/alocate/:proposalId/status', (req, res) => {
-  console.log('cheguei aqui');
   const { proposal } = req.body;
   if ('approved' in proposal) {
     const stats = proposal.approved ? 'Aprovado' : 'Recusado';
@@ -62,24 +61,18 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
 
 routes.get('/project/:projectId', (req, res) => {
   const projectId = parseInt(req.params.projectId);
-
   if (functions.checkInt(projectId)) {
-    db.query('SELECT p.name, p.problem, p.expectedResult, u.fullName, u.phoneNumber\
-              FROM PROJECT p\
-                INNER JOIN COMMON_USER u ON u.userId = p.userId\
-                WHERE p.projectId = $1;',
+    db.query('SELECT p.* FROM PROJECT p WHERE p.projectid = $1',
     [projectId]).then((response) => {
-      db.query('SELECT ka.knowledgeArea, sa.description\
-                            FROM KNOWLEDGE_AREA ka\
-                            INNER JOIN SUBAREA sa\
-                              ON sa.knowledgeAreaId=ka.knowledgeAreaId\
-                            INNER JOIN has\
-                              ON sa.subAreaId= has.subAreaId\
-                            WHERE has.projectId = $1;', [projectId]).then((resAreas) => {
-        const result = response.rows[0];
-        result.areas = resAreas.rows;
-        res.json(result);
-      });
+      const result = response.rows[0];
+      if (!result) {
+        res.status(400).json({ message: `Projeto de id ${projectId} não encontrado` });
+      } else {
+        db.query('SELECT k.* FROM KEYWORD k JOIN abstracts a on k.keywordid = a.keywordid AND a.projectid = $1', [projectId]).then((response) => {
+          result.keywords = response.rows;
+          res.json(result);
+        });
+      }
     });
   } else {
     res.status = 401;
@@ -118,7 +111,6 @@ routes.post('/upload', async (req, res) => {
 });
 
 routes.post('/project', (req, res) => { // Falta tratamento dos dados
-  console.log(req.body);
   projectController.addProject(req.body).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {
@@ -137,6 +129,14 @@ routes.delete('/project/:projectId', (req, res) => { // Falta tratamento dos dad
 routes.get('/areas-conhecimento', (req, res) => {
   projectController.getKnowledgeAreas().then((response) => {
     res.status(200).json({ response });
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
+routes.get('/palavra-chave', (req, res) => {
+  projectController.getKeywords().then((response) => {
+    res.status(200).json(response);
   }).catch((response) => {
     res.status(400).json({ response });
   });
