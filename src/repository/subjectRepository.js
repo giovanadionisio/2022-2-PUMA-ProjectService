@@ -10,4 +10,13 @@ module.exports = {
       resolve(response.rows[0]);
     }).catch((e) => reject(e));
   }),
-};
+
+  getSubject: (subjectId) => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * FROM SUBJECT WHERE subjectId = $1',
+      [subjectId],
+    ).then((response) => {
+      resolve(response.rows[0]);
+    }).catch((e) => reject(e));
+  })
+}; 

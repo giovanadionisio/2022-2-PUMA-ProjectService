@@ -1,4 +1,7 @@
 const projectRepository = require('../repository/projectRepository');
+const semesterRepository = require('../repository/semesterRepository');
+const subjectRepository = require('../repository/subjectRepository');
+const keywordRepository = require('../repository/keywordRepository');
 const { simplifiedAllocation } = require('../utils/functions');
 
 module.exports = {
@@ -11,6 +14,64 @@ module.exports = {
         }).catch((e) => reject(e));
       }).catch((e) => reject(e));
     })
+  },
+
+  getProjectData: (projectId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let User = null;
+        let Subject = null;
+        let Semester = null;
+        let Keywords = null;
+        const project = await projectRepository.getProjectData(projectId);
+
+        User = await projectRepository.getUserData(project.userid);
+        Keywords = await keywordRepository.getProjectKeywords(projectId);
+        if (project.subjectid) {
+          Subject = await subjectRepository.getSubject(project.subjectid);
+        }
+        if (project.semesterid) {
+          Semester = await semesterRepository.getSemester(project.semesterid);
+        }
+
+        resolve({ ...project, User, Subject, Semester, Keywords });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
+  updateProject: (project) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const mainKeyword = project.keywords.find((k) => k.main)?.keywordid;
+        const subjectid = await projectRepository.getSubjectByKeyword(mainKeyword);
+
+        await projectRepository.removeProjectKeywords(project.projectid);
+        await projectRepository.addProjectKeywords(project.projectid, project.keywords);
+
+        await projectRepository.updateProject({ ...project, subjectid });
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    })
+  },
+
+  evaluateProject: (payload) => {
+    return new Promise((resolve, reject) => {
+      projectRepository.evaluateProject(payload).then((response) => {
+        resolve(response)
+      }).catch((e) => reject(e));
+    });
+  },
+
+  reallocateProject: (payload) => {
+    return new Promise((resolve, reject) => {
+      projectRepository.reallocateProject(payload).then((response) => {
+        resolve(response)
+      }).catch((e) => reject(e));
+    });
   },
 
   getUserProposals: (user) => {
@@ -40,6 +101,7 @@ module.exports = {
       resolve();
     });
   },
+
   getKnowledgeAreas: () => {
     return new Promise((resolve, reject) => {
       try {
@@ -49,6 +111,7 @@ module.exports = {
       resolve();
     });
   },
+
   getKeywords: () => {
     return new Promise((resolve, reject) => {
       try {

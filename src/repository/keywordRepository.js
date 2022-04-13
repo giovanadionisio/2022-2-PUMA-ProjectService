@@ -23,6 +23,14 @@ module.exports = {
     });
   }),
 
+  getAllKeywords: () => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * FROM KEYWORD',
+    ).then((response) => {
+      resolve(response.rows);
+    }).catch((e) => reject(e));
+  }),
+
   getKeywordByName: (keyword) => new Promise((resolve, reject) => {
     db.query(
       'SELECT * FROM KEYWORD WHERE keyword = $1',
@@ -32,10 +40,28 @@ module.exports = {
     }).catch((e) => reject(e));
   }),
 
+  getKeywordById: (keywordId) => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * FROM KEYWORD WHERE keywordId = $1',
+      [keywordId],
+    ).then((response) => {
+      resolve(response.rows[0]);
+    }).catch((e) => reject(e));
+  }),
+
+  getProjectKeywords: (projectId) => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT K.keyword, K.keywordid, A.main FROM abstracts as A JOIN KEYWORD as K on A.keywordid = K.keywordid WHERE projectid = $1',
+      [projectId],
+    ).then((response) => {
+      resolve(response.rows);
+    }).catch((e) => reject(e));
+  }),
+
   addKeywordSubjectRelation: (input) => new Promise((resolve, reject) => {
     const { keywordid, subjectid } = input;
     db.query(
-      'INSERT INTO summarize(keywordid, subjectid) VALUES ($1,$2) RETURNING *',
+      'INSERT INTO summarize(keywordId, subjectId) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],
     ).then((response) => resolve(response.rows[0]))
       .catch((e) => reject(e));
