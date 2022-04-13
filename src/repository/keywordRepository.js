@@ -40,4 +40,12 @@ module.exports = {
     ).then((response) => resolve(response.rows[0]))
       .catch((e) => reject(e));
   }),
+
+  getKeywordAvailbleToSubject: () => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT k.keywordid, k.keyword FROM keyword k LEFT JOIN summarize s ON k.keywordid = s.keywordid WHERE s.keywordid IS NULL',
+    ).then((response) => {
+      resolve(response.rows);
+    }).catch((e) => reject(e));
+  }),
 };
