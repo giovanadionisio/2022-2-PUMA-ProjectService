@@ -10,4 +10,15 @@ module.exports = {
       resolve(response.rows[0]);
     }).catch((e) => reject(e));
   }),
+  getSubjects: () => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT DISTINCT s.subjectid, s.name FROM subject s ORDER BY subjectid DESC',
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
+  },
 };

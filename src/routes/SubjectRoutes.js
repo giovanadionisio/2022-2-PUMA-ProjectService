@@ -11,4 +11,12 @@ routes.post('/subject', (req, res) => {
   });
 });
 
+routes.get('/disciplina', (req, res) => {
+  subjectController.getSubjetcs().then((response) => {
+    res.status(200).json({ response });
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
 module.exports = routes;

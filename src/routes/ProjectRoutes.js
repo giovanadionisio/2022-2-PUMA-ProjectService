@@ -80,7 +80,7 @@ routes.get('/project/:projectId', (req, res) => {
   }
 });
 
-routes.get('/subject', (req, res) => {
+routes.get('/disciplina', (req, res) => {
   db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
     res.json(response.rows);
   });

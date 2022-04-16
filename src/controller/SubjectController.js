@@ -4,6 +4,7 @@
 const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
 const subareaRepository = require('../repository/subareaRepository');
+const projectRepository = require('../repository/projectRepository');
 
 module.exports = {
   addSubject: (input) => new Promise(async (resolve, reject) => {
@@ -26,6 +27,16 @@ module.exports = {
       reject(e);
     }
   }),
+  getSubjetcs: () => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(subjectRepository.getSubjects());
+      } catch (e) {
+        reject(e);
+      }
+      resolve();
+    });
+  },
 };
 
 const subjectUtils = {
