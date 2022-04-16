@@ -21,4 +21,12 @@ module.exports = {
     })
       .catch((e) => reject(e));
   }),
+
+  getSubareas: () => new Promise((resolve, reject) => {
+    db.query(
+      'SELECT * from subarea',
+    ).then((response) => {
+      resolve(response.rows);
+    }).catch((e) => reject(e));
+  }),
 };

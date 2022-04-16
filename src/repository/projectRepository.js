@@ -4,18 +4,18 @@ const { response } = require('express');
 module.exports = {
   getUserProposals: async (user) => {
     return new Promise((resolve, reject) => {
-      let result = new Promise(() => {});
+      let result = new Promise(() => { });
       if (user.operation === 'projetos') {
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid ORDER BY p.projectid DESC');
       } else if (user.operation === 'projetos-disciplina') {
-        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE p.subjectid IN (SELECT DISTINCT s.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber INNER JOIN semester s ON s.semesterid = l.semesterid WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE p.subjectid IN (SELECT DISTINCT l.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
       } else {
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE p.userid = $1 ORDER BY p.projectid DESC', [user.userId]);
       }
       result.then((response) => {
         resolve(response.rows);
       }).catch((response) => {
-          reject(response);
+        reject(response);
       });
     });
   },
@@ -26,7 +26,7 @@ module.exports = {
         `INSERT INTO PROJECT(name,problem,expectedresult,status,userid,subjectid,createdat) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
         [project.name, project.problem, project.expectedresult, project.status, project.userid, project.subjectid, project.createdat],
       ).then((response) => {
-          resolve(response.rows[0].projectid);
+        resolve(response.rows[0].projectid);
       }).catch((response) => {
         reject(response);
       });
@@ -126,8 +126,8 @@ module.exports = {
       areas.push([area.knowledgeareaid, projectId]);
     });
     return new Promise((resolve, reject) => {
-      if(areas.length == 0){
-        reject({error: "Missing knowledge areas", severity: "ERROR"});
+      if (areas.length == 0) {
+        reject({ error: "Missing knowledge areas", severity: "ERROR" });
       }
       areas.forEach((area) => {
         iterations++;

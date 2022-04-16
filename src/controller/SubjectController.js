@@ -9,19 +9,18 @@ const projectRepository = require('../repository/projectRepository');
 module.exports = {
   addSubject: (input) => new Promise(async (resolve, reject) => {
     try {
-      const { subject, keywords, subarea } = input;
+      const { subject, keywords, subareas } = input;
 
       const subjectResponse = await subjectRepository.addSubject(subject);
 
-      const keywordsResponse = await subjectUtils.addUniqueKeywords(keywords);
+      await subjectUtils.addSubjectKeywordRelation(subjectResponse, keywords);
 
-      await subjectUtils.addSubjectKeywordRelation(subjectResponse, keywordsResponse);
-
-      await subjectUtils.addSubjectSubareaRelation(subjectResponse, subarea);
+      await subjectUtils.addSubjectSubareaRelation(subjectResponse, subareas);
 
       resolve({
         subject: subjectResponse,
-        keywords: keywordsResponse,
+        keywords,
+        subareas,
       });
     } catch (e) {
       reject(e);
@@ -37,6 +36,26 @@ module.exports = {
       resolve();
     });
   },
+
+  getKeywords: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await keywordRepository.getKeywordAvailbleToSubject();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  getSubareas: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subareaRepository.getSubareas();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
 };
 
 const subjectUtils = {
@@ -65,10 +84,12 @@ const subjectUtils = {
     }
   },
 
-  addSubjectSubareaRelation: async (subject, subarea) => {
-    await subareaRepository.addSubjectSubareaRelation({
-      subareaid: subarea.subareaid,
-      subjectid: subject.subjectid,
-    });
+  addSubjectSubareaRelation: async (subject, subareas) => {
+    for await (const subarea of subareas) {
+      await subareaRepository.addSubjectSubareaRelation({
+        subareaid: subarea.subareaid,
+        subjectid: subject.subjectid,
+      });
+    }
   },
 };
