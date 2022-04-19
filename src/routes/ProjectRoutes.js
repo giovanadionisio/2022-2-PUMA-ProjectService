@@ -1,3 +1,5 @@
+const authentication = require('../utils/teste');
+
 // eslint-disable-next-line import/no-unresolved
 const express = require('express');
 
@@ -134,6 +136,7 @@ routes.get('/areas-conhecimento', (req, res) => {
   });
 });
 
+// Palavras-Chave - CRUD
 routes.get('/palavra-chave', (req, res) => {
   projectController.getKeywords().then((response) => {
     res.status(200).json(response);
@@ -141,6 +144,41 @@ routes.get('/palavra-chave', (req, res) => {
     res.status(400).json({ response });
   });
 });
+
+// Body com campo Keyword necessário
+routes.post('/palavra-chave', (req, res) => { // Falta tratamento dos dados
+  keyword = req.body.keyword;
+
+  projectController.addKeyword(keyword).then((response) => {
+    res.status(200).json({ 'deu bom': response });
+  }).catch((e) => {
+    res.status(400).json({ 'chora': e});
+  });
+});
+
+// Body necessita da keywordid (id palavra chave a ser mudada) e newKeyword (nova palavra a ser atualizada)
+routes.put('/palavra-chave/edit', (req, res) => {
+  const { body, params } = req;
+  
+  projectController.updateKeyword(parseInt(body.keywordid), body.newKeyword).then((response) => {
+    res.status(200).json(response);
+  }).catch((e) => {
+    res.status(400).json({ 'response': body, 'error': e });
+  });
+});
+  
+// Parâmetro vai na url devido a deleção ser via update
+routes.put('/palavra-chave/:keywordid/delete', (req, res) => {
+  const { body, params } = req;
+  projectController.deleteKeyword(parseInt(params.keywordid)).then((response) => {
+
+    res.status(200).json(response);
+  }).catch((e) => {
+    res.status(400).json({ 'bruno': params, 'response': parseInt(params.keywordid) });
+  });
+});
+
+
 
 routes.get('/project/consulta', () => {
   db.query('SELECT * FROM PROJECT').then((res) => {

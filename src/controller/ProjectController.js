@@ -1,4 +1,5 @@
 const projectRepository = require('../repository/projectRepository');
+const keywordRepository = require('../repository/keywordRepository');
 const { simplifiedAllocation } = require('../utils/functions');
 
 module.exports = {
@@ -53,6 +54,41 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         resolve(projectRepository.getKeywords());
+      } catch (e) {
+        reject(e);
+      }
+      resolve();
+    });
+  },
+
+
+  addKeyword: (keyword) => {
+
+    return new Promise((resolve, reject) => {
+      try{
+          // console.log('eae',keyword);
+          resolve(keywordRepository.addKeyword(keyword)); 
+      } catch (e) { reject(e); }
+      resolve();
+     });
+    },
+
+  updateKeyword: (keywordid, newKeyword) => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(keywordRepository.updateKeyword(keywordid, newKeyword));
+      } catch (e) {
+        reject(e);
+      }
+      resolve();
+    });
+  },
+
+
+  deleteKeyword: (keywordid) => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(keywordRepository.deleteKeyword(keywordid));
       } catch (e) {
         reject(e);
       }

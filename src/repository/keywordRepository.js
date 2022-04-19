@@ -48,4 +48,55 @@ module.exports = {
       resolve(response.rows);
     }).catch((e) => reject(e));
   }),
+
+  updateKeyword:(keywordid, newKeyword) => {
+    try {
+
+      return new Promise((resolve, reject) => {
+        db.query(
+          // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
+          'UPDATE KEYWORD SET keyword = $1 where keywordid = $2 RETURNING *;',
+          [newKeyword, keywordid]
+
+        ).then((response) => { 
+            console.log(response);
+            resolve(response.rows);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      });
+    } catch (e) {
+      
+      reject(e);
+
+    }
+  },
+
+  
+  deleteKeyword:(keywordid) => {
+    try {
+
+      return new Promise((resolve, reject) => {
+        db.query(
+          // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
+          'UPDATE KEYWORD SET deleted = true where keywordid = $1  RETURNING *;',
+          [keywordid]
+
+        ).then((response) => { 
+            console.log(response);
+            resolve(response.rows);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      });
+    } catch (e) {
+      
+      reject(e);
+
+    }
+  },
+
+
 };
