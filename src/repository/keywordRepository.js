@@ -9,7 +9,11 @@ module.exports = {
       [keyword],
     ).then((response) => {
       resolve(response.rows[0]);
-    }).catch((e) => reject(e));
+    }).catch((e) => {
+      console.log('banco', e);
+      reject(e);
+
+    });
   }),
 
   addManyKeywords: (keywords) => new Promise((resolve, reject) => {
@@ -48,6 +52,19 @@ module.exports = {
       resolve(response.rows);
     }).catch((e) => reject(e));
   }),
+
+
+  getKeywordsAlternative: () => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT k.keywordid, k.keyword, s.name FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true;',
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
+  },
 
   updateKeyword:(keywordid, newKeyword) => {
     try {

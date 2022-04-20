@@ -145,21 +145,29 @@ routes.get('/palavra-chave', (req, res) => {
   });
 });
 
+// Palavras-Chave - CRUD
+routes.get('/palavra-chave2', (req, res) => {
+  console.log('Deus é mais');
+  projectController.getKeywordsAlternative().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
 // Body com campo Keyword necessário
 routes.post('/palavra-chave', (req, res) => { // Falta tratamento dos dados
-  keyword = req.body.keyword;
 
-  projectController.addKeyword(keyword).then((response) => {
+  projectController.addKeyword(req.body).then((response) => {
     res.status(200).json({ 'deu bom': response });
   }).catch((e) => {
-    res.status(400).json({ 'chora': e});
+    res.status(400).json({ 'chorando': e});
   });
 });
 
 // Body necessita da keywordid (id palavra chave a ser mudada) e newKeyword (nova palavra a ser atualizada)
 routes.put('/palavra-chave/edit', (req, res) => {
   const { body, params } = req;
-  
   projectController.updateKeyword(parseInt(body.keywordid), body.newKeyword).then((response) => {
     res.status(200).json(response);
   }).catch((e) => {

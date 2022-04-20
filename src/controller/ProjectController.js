@@ -66,18 +66,35 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       try{
-          // console.log('eae',keyword);
-          resolve(keywordRepository.addKeyword(keyword)); 
-      } catch (e) { reject(e); }
+          console.log('DEBUG',keyword.keyword);
+          resolve(keywordRepository.addKeyword(keyword.keyword)); 
+      } catch (e) { 
+        console.log(e);
+        reject(e); }
       resolve();
      });
     },
+    
+    getKeywordsAlternative: () => {
+      return new Promise((resolve, reject) => {
+        try {
+          resolve(keywordRepository.getKeywordsAlternative());
+        } catch (e) {
+          reject(e);
+        }
+        resolve();
+      });
+    },
+
 
   updateKeyword: (keywordid, newKeyword) => {
     return new Promise((resolve, reject) => {
       try {
+        console.log('vamo vê');
+
         resolve(keywordRepository.updateKeyword(keywordid, newKeyword));
       } catch (e) {
+        console.log(e);
         reject(e);
       }
       resolve();
