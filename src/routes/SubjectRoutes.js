@@ -35,4 +35,22 @@ routes.get('/professors', (req, res) => {
   });
 });
 
+routes.get('/subject/:subjectid', (req, res) => {
+  subjectController.getSubject({
+    subjectid: parseInt(req.params.subjectid, 10),
+  }).then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json(response);
+  });
+});
+
+routes.put('/subject/:subjectid', (req, res) => {
+  subjectController.updateSubject(req.body).then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json(response);
+  });
+});
+
 module.exports = routes;
