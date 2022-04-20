@@ -7,5 +7,5 @@ module.exports = {
                 resolve(response);
             }).catch((error) => { reject(error) });
         })
-    }
+    },
 };

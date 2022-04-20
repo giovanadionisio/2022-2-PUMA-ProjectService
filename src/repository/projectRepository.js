@@ -6,11 +6,15 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let result = new Promise(() => { });
       if (user.operation === 'projetos') {
-        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid ORDER BY p.projectid DESC');
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE not(p.deleted) ORDER BY p.projectid DESC');
       } else if (user.operation === 'projetos-disciplina') {
+<<<<<<< Updated upstream
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE p.subjectid IN (SELECT DISTINCT s.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber INNER JOIN semester s ON s.semesterid = l.semesterid WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
+=======
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE not(p.deleted) and p.subjectid IN (SELECT DISTINCT l.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
+>>>>>>> Stashed changes
       } else {
-        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE p.userid = $1 ORDER BY p.projectid DESC', [user.userId]);
+        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE not(p.deleted) and p.userid = $1 ORDER BY p.projectid DESC', [user.userId]);
       }
       result.then((response) => {
         resolve(response.rows);
@@ -68,7 +72,7 @@ module.exports = {
       }).catch((error) => {
         reject(error);
       });
-    })
+    });
   },
 
   reallocateProject: ({ projectId, status, feedback, subjectId }) => {
@@ -80,7 +84,7 @@ module.exports = {
       }).catch((error) => {
         reject(error);
       });
-    })
+    });
   },
 
   addProject: (project) => {
@@ -102,10 +106,22 @@ module.exports = {
         const { projectid, subjectid, name, expectedresult, problem } = project;
         await db.query(`UPDATE PROJECT SET subjectid = $2, name = $3, expectedResult = $4, problem = $5 WHERE projectid = $1`,
           [projectid, subjectid, name, expectedresult, problem]);
-        resolve();
+        resolve({ status: 'OK' });
       } catch (error) {
         reject(error);
       }
+    });
+  },
+
+  deleteProject: (projectId) => {
+    return new Promise((resolve, reject) => {
+      db.query(`UPDATE PROJECT SET deleted = true WHERE projectid = $1`,
+        [projectId]
+      ).then((response) => {
+        resolve({ status: 'OK' });
+      }).catch((error) => {
+        reject(error);
+      });
     });
   },
 
@@ -145,28 +161,6 @@ module.exports = {
         .catch((response) => {
           reject(response);
         });
-    });
-  },
-
-  deleteProject: (projectId) => {
-    return new Promise((resolve, reject) => {
-      db.query('DELETE FROM FILE WHERE projectid = $1', [projectId]).then(() => {
-        db.query('DELETE FROM EXECUTES WHERE projectid = $1', [projectId]).then(() => {
-          db.query('DELETE FROM HAS WHERE projectid = $1', [projectId]).then(() => {
-            db.query('DELETE FROM PROJECT WHERE projectid = $1 RETURNING *', [projectId]).then((response) => {
-              resolve(response);
-            }).catch((error) => {
-              reject(error);
-            });
-          }).catch((error) => {
-            reject(error);
-          });
-        }).catch((response) => {
-          reject(response);
-        });
-      }).catch((response) => {
-        reject(response);
-      });
     });
   },
 

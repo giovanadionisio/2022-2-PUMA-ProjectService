@@ -13,6 +13,15 @@ routes.get('/', (req, res) => {
   });
 });
 
+// TODO: Falta tratamento dos dados
+routes.post('/project/create', (req, res) => {
+  projectController.addProject(req.body).then((response) => {
+    res.status(200).json({ response });
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
 // TODO: check if the records already exist
 routes.get('/project/get/:projectId', (req, res) => {
   const projectId = Number(req.params.projectId);
@@ -41,6 +50,15 @@ routes.put('/project/evaluate', (req, res) => {
   });
 });
 
+// TODO: Falta tratamento dos dados
+routes.delete('/project/delete/:projectId', (req, res) => {
+  projectController.deleteProject(req.params.projectId).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
 // TODO: check if the records already exist
 routes.put('/project/reallocate', (req, res) => {
   projectController.reallocateProject(req.body).then((response) => {
@@ -57,7 +75,6 @@ routes.get('/userProposals/:userId', (req, res) => {
     projectController.getUserProposals(user).then((response) => {
       res.status(200).json(response);
     }).catch((error) => {
-      console.log(error);
       res.status(400).json(error);
     });
   } else {
@@ -69,10 +86,8 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
   const { proposal } = req.body;
   if ('approved' in proposal) {
     const stats = proposal.approved ? 'Aprovado' : 'Recusado';
-    console.log(`entrei - ${stats}`);
     db.query('UPDATE PROJECT SET status=$1 WHERE projectid = $2',
       [stats, req.params.proposalId]).then((response) => {
-        console.log(response);
         if (response.rowCount == 0) { res.status(404).json({ message: 'Project not found' }); } else {
           res.status(201).json({ message: 'Project updated' });
         }
@@ -85,7 +100,6 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
 routes.put('/proposal/:projectId', (req, res) => {
   const projId = parseInt(req.params.projectId);
   const subjectId = parseInt(req.body.subjectId);
-
   if (functions.checkInt(projId) && functions.checkInt(subjectId)) {
     db.query('UPDATE PROJECT SET subjectId = $1 WHERE projectId = $2',
       [subjectId, projId]).then((response) => {
@@ -101,22 +115,6 @@ routes.put('/proposal/:projectId', (req, res) => {
 routes.get('/project/consulta', () => {
   db.query('SELECT * FROM PROJECT').then((res) => {
     res.json(res.rows);
-  });
-});
-
-routes.post('/project', (req, res) => { // Falta tratamento dos dados
-  projectController.addProject(req.body).then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
-  });
-});
-
-routes.delete('/project/:projectId', (req, res) => { // Falta tratamento dos dados
-  projectController.deleteProject(req.params.projectId).then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
   });
 });
 
@@ -147,6 +145,14 @@ routes.get('/palavra-chave', (req, res) => {
     res.status(200).json(response);
   }).catch((response) => {
     res.status(400).json({ response });
+  });
+});
+
+routes.get('/keywords', (req, res) => {
+  projectController.getKeywordsAvailbleToProject().then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
   });
 });
 

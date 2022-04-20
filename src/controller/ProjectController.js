@@ -51,7 +51,7 @@ module.exports = {
         await projectRepository.addProjectKeywords(project.projectid, project.keywords);
 
         await projectRepository.updateProject({ ...project, subjectid });
-        resolve();
+        resolve({ status: 'OK' });
       } catch (error) {
         reject(error);
       }
@@ -82,6 +82,14 @@ module.exports = {
     })
   },
 
+  deleteProject: (projectId) => {
+    return new Promise((resolve, reject) => {
+      projectRepository.deleteProject(projectId).then((response) => {
+        resolve(response);
+      }).catch((error) => { reject(error) });
+    });
+  },
+
   addFile: (file) => {
     return new Promise((resolve, reject) => {
       try {
@@ -92,14 +100,12 @@ module.exports = {
     })
   },
 
-  deleteProject: (projectId) => {
+  getKeywordsAvailbleToProject: () => {
     return new Promise((resolve, reject) => {
-      try {
-        const response = projectRepository.deleteProject(projectId);
+      keywordRepository.getKeywordsAvailbleToProject().then((response) => {
         resolve(response);
-      } catch (e) { reject(e); }
-      resolve();
-    });
+      }).catch((error) => { reject(error) });
+    })
   },
 
   getKnowledgeAreas: () => {
