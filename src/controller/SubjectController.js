@@ -63,6 +63,55 @@ module.exports = {
       reject(e);
     }
   }),
+
+  getSubject: (input) => new Promise(async (resolve, reject) => {
+    try {
+      const subject = await subjectRepository.getSubject(input);
+      const keywords = await keywordRepository.getKeywordsOfSubject(input);
+      const subareas = await subareaRepository.getSubareasOfSubject(input);
+      const professors = await professorRepository.getProfessorsofSubject(input);
+
+      resolve({
+        subject,
+        keywords,
+        subareas,
+        professors,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  updateSubject: (input) => new Promise(async (resolve, reject) => {
+    try {
+      const {
+        subject, keywords, subareas, professors,
+      } = input;
+
+      await keywordRepository.removeKeywordsOfSubject(subject);
+      await subareaRepository.removeSubareasOfSubject(subject);
+      await professorRepository.removeProfessorsofSubject(subject);
+
+      const keywordsResponse = await subjectUtils
+        .addSubjectKeywordRelation(subject, keywords);
+
+      await subjectUtils.addSubjectSubareaRelation(subject, subareas);
+
+      await subjectUtils.addSubjectProfessorRelation(subject, professors);
+
+      const subjectResponse = await subjectRepository.updateSubject(subject);
+
+      resolve({
+        subject: subjectResponse,
+        keywords: keywordsResponse,
+        subareas,
+        professors,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  }),
 };
 
 const subjectUtils = {
