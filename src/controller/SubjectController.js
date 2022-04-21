@@ -5,22 +5,29 @@ const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
 const subareaRepository = require('../repository/subareaRepository');
 const projectRepository = require('../repository/projectRepository');
+const professorRepository = require('../repository/professorRepository');
 
 module.exports = {
   addSubject: (input) => new Promise(async (resolve, reject) => {
     try {
-      const { subject, keywords, subareas } = input;
+      const {
+        subject, keywords, subareas, professors,
+      } = input;
 
       const subjectResponse = await subjectRepository.addSubject(subject);
 
-      await subjectUtils.addSubjectKeywordRelation(subjectResponse, keywords);
+      const keywordsResponse = await subjectUtils
+        .addSubjectKeywordRelation(subjectResponse, keywords);
 
       await subjectUtils.addSubjectSubareaRelation(subjectResponse, subareas);
 
+      await subjectUtils.addSubjectProfessorRelation(subjectResponse, professors);
+
       resolve({
         subject: subjectResponse,
-        keywords,
+        keywords: keywordsResponse,
         subareas,
+        professors,
       });
     } catch (e) {
       reject(e);
@@ -76,38 +83,98 @@ module.exports = {
       reject(e);
     }
   }),
+
+  getProfessors: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await professorRepository.getProfessors();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  getSubject: (input) => new Promise(async (resolve, reject) => {
+    try {
+      const subject = await subjectRepository.getSubject(input);
+      const keywords = await keywordRepository.getKeywordsOfSubject(input);
+      const subareas = await subareaRepository.getSubareasOfSubject(input);
+      const professors = await professorRepository.getProfessorsofSubject(input);
+
+      resolve({
+        subject,
+        keywords,
+        subareas,
+        professors,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  updateSubject: (input) => new Promise(async (resolve, reject) => {
+    try {
+      const {
+        subject, keywords, subareas, professors,
+      } = input;
+
+      await keywordRepository.removeKeywordsOfSubject(subject);
+      await subareaRepository.removeSubareasOfSubject(subject);
+      await professorRepository.removeProfessorsofSubject(subject);
+
+      const keywordsResponse = await subjectUtils
+        .addSubjectKeywordRelation(subject, keywords);
+
+      await subjectUtils.addSubjectSubareaRelation(subject, subareas);
+
+      await subjectUtils.addSubjectProfessorRelation(subject, professors);
+
+      const subjectResponse = await subjectRepository.updateSubject(subject);
+
+      resolve({
+        subject: subjectResponse,
+        keywords: keywordsResponse,
+        subareas,
+        professors,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  }),
 };
 
 const subjectUtils = {
-  addUniqueKeywords: async (keywords) => {
-    let keywordsFiltered = await Promise.all(keywords.map(async (keyword) => {
-      const keywordExists = await keywordRepository.getKeywordByName(keyword);
-      console.log(keywordExists);
-      if (!keywordExists) {
-        return [keyword];
-      }
-      return [];
-    }));
-
-    keywordsFiltered = keywordsFiltered.filter((key) => key.length > 0);
-
-    return keywordsFiltered.length > 0
-      ? (keywordRepository.addManyKeywords(keywordsFiltered)) : [];
-  },
-
   addSubjectKeywordRelation: async (subject, keywords) => {
-    for await (const keyword of keywords) {
+    let res = [];
+    for await (let keyword of keywords) {
+      if (!keyword.hasOwnProperty('keywordid')) {
+        keyword = await keywordRepository.addKeyword(keyword.keyword)
+          .catch((e) => console.log(e));
+        delete keyword.deleted;
+      }
+      res = [...res, keyword];
       keywordRepository.addKeywordSubjectRelation({
         keywordid: keyword.keywordid,
         subjectid: subject.subjectid,
       });
     }
+    return res;
   },
 
   addSubjectSubareaRelation: async (subject, subareas) => {
     for await (const subarea of subareas) {
       await subareaRepository.addSubjectSubareaRelation({
         subareaid: subarea.subareaid,
+        subjectid: subject.subjectid,
+      });
+    }
+  },
+
+  addSubjectProfessorRelation: async (subject, professors) => {
+    for await (const professor of professors) {
+      await professorRepository.addProfessorSubjectRelation({
+        regNumber: professor.regnumber,
         subjectid: subject.subjectid,
       });
     }
