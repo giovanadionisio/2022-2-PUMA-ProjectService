@@ -59,7 +59,7 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
   }
 });
 
-routes.get('/project/:projectId', (req, res) => {
+routes.get('/project/get/:projectId', (req, res) => {
   const projectId = parseInt(req.params.projectId);
   if (functions.checkInt(projectId)) {
     db.query('SELECT p.* FROM PROJECT p WHERE p.projectid = $1',
