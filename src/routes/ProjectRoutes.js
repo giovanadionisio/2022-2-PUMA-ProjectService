@@ -104,7 +104,7 @@ routes.post('/upload', async (req, res) => {
   });
 });
 
-routes.post('/project', (req, res) => { // Falta tratamento dos dados
+routes.post('/project/create', (req, res) => { // Falta tratamento dos dados
   projectController.addProject(req.body).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {
