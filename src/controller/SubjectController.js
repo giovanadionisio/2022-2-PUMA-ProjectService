@@ -83,6 +83,16 @@ module.exports = {
     }
   }),
 
+  getSubjects: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subjectRepository.getSubjects();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
   updateSubject: (input) => new Promise(async (resolve, reject) => {
     try {
       const {

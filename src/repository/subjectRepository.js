@@ -11,6 +11,7 @@ module.exports = {
       resolve(response.rows[0]);
     }).catch((e) => reject(e));
   }),
+
   getSubject: (input) => new Promise((resolve, reject) => {
     const { subjectid } = input;
     db.query(
@@ -18,11 +19,21 @@ module.exports = {
       [subjectid],
     )
       .then((response) => {
+        resolve(response.rows[0]);
+      }).catch((response) => {
+        reject(response);
+      });
+  }),
+
+  getSubjects: () => new Promise((resolve, reject) => {
+    db.query('select * from subject sb where not(sb.deleted)')
+      .then((response) => {
         resolve(response.rows);
       }).catch((response) => {
         reject(response);
       });
   }),
+
   updateSubject: (input) => new Promise((resolve, reject) => {
     const { subjectid, name, coursesyllabus } = input;
     db.query(
