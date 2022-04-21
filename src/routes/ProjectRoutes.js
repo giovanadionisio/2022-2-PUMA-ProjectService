@@ -1,4 +1,3 @@
-const authentication = require('../utils/teste');
 
 // eslint-disable-next-line import/no-unresolved
 const express = require('express');

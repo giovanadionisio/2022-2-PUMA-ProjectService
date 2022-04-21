@@ -8,4 +8,99 @@ module.exports = {
             }).catch((error) => { reject(error) });
         })
     },
+
+    getKeywords: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(projectRepository.getKeywords());
+          } catch (e) {
+            reject(e);
+          }
+          resolve();
+        });
+      },    
+
+    addKeyword: (keyword) => {
+
+        return new Promise((resolve, reject) => {
+          try{
+              console.log('DEBUG',keyword.keyword);
+              resolve(keywordRepository.addKeyword(keyword.keyword)); 
+          } catch (e) { 
+            console.log(e);
+            reject(e); }
+          resolve();
+         });
+        },
+        
+        getKeywordsAlternative: () => {
+          return new Promise((resolve, reject) => {
+            try {
+              resolve(keywordRepository.getKeywordsAlternative());
+            } catch (e) {
+              reject(e);
+            }
+            resolve();
+          });
+        },
+    
+    
+      updateKeywordContent: (keywordid, newKeyword) => {
+        return new Promise((resolve, reject) => {
+          try {
+            console.log('vamo vê');
+    
+            resolve(keywordRepository.updateKeyword(keywordid, newKeyword));
+          } catch (e) {
+            console.log(e);
+            reject(e);
+          }
+          resolve();
+        });
+      },
+    
+      updateSubjectKeyword: (keywordid, subjectid) => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(keywordRepository.updateSubjectKeyword(keywordid, subjectid));
+          } catch (e) {
+            console.log(e);
+            reject(e);
+          }
+          resolve();
+        });
+      },
+    
+      deleteKeyword: (keywordid) => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(keywordRepository.deleteKeyword(keywordid));
+          } catch (e) {
+            reject(e);
+          }
+          resolve();
+        });
+      },
+    
+      getSubjects: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(keywordRepository.getSubjects());
+          } catch (e) {
+            reject(e);
+          }
+          resolve();
+        });
+      },
+    
+      addKeywordSubjectRelation: (req) => {
+        return new Promise((resolve, reject) => {
+          try{
+              resolve(keywordRepository.addKeywordSubjectRelation(req)); 
+          } catch (e) { 
+            // console.log(e);
+            reject(e); }
+          resolve();
+         });
+        },
 };
