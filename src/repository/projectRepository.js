@@ -74,22 +74,10 @@ module.exports = {
 
   deleteProject: (projectId) => {
     return new Promise((resolve, reject) => {
-      db.query('DELETE FROM FILE WHERE projectid = $1', [projectId]).then(() => {
-        db.query('DELETE FROM EXECUTES WHERE projectid = $1', [projectId]).then(() => {
-          db.query('DELETE FROM HAS WHERE projectid = $1', [projectId]).then(() => {
-            db.query('DELETE FROM PROJECT WHERE projectid = $1 RETURNING *', [projectId]).then((response) => {
-              resolve(response);
-            }).catch((error) => {
-              reject(error);
-            });
-          }).catch((error) => {
-            reject(error);
-          });
-        }).catch((response) => {
-          reject(response);
-        });
-      }).catch((response) => {
-        reject(response);
+      db.query('DELETE FROM PROJECT WHERE projectid = $1 RETURNING *', [projectId]).then((response) => {
+        resolve(response);
+      }).catch((error) => {
+        reject(error);
       });
     });
   },

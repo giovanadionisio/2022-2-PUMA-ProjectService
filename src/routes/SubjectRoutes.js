@@ -11,11 +11,19 @@ routes.post('/subject', (req, res) => {
   });
 });
 
-routes.get('/disciplina', (req, res) => {
-  subjectController.getSubjetcs().then((response) => {
-    res.status(200).json({ response });
+routes.get('/subject', (req, res) => {
+  subjectController.getSubjects().then((response) => {
+    res.status(200).json(response);
   }).catch((response) => {
-    res.status(400).json({ response });
+    res.status(400).json(response);
+  });
+});
+
+routes.delete('/subject/:subjectId', (req, res) => {
+  subjectController.deleteSubject(req.params.subjectId).then((response) => {
+    res.status(200).json(response.data);
+  }).catch((error) => {
+    res.status(400).json({ error });
   });
 });
 
