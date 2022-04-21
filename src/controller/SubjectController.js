@@ -45,6 +45,26 @@ module.exports = {
       reject(e);
     }
   }),
+
+  getSubjects: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subjectRepository.getSubjects();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  deleteSubject: (subjectId) => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subjectRepository.deleteSubject(subjectId);
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
 };
 
 const subjectUtils = {
