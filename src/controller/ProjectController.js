@@ -28,7 +28,7 @@ module.exports = {
         User = await projectRepository.getUserData(project.userid);
         Keywords = await keywordRepository.getProjectKeywords(projectId);
         if (project.subjectid) {
-          Subject = await subjectRepository.getSubject(project.subjectid);
+          Subject = await subjectRepository.getSubject({ subjectid: project.subjectid });
         }
         if (project.semesterid) {
           Semester = await semesterRepository.getSemester(project.semesterid);

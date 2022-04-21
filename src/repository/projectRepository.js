@@ -8,11 +8,7 @@ module.exports = {
       if (user.operation === 'projetos') {
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE not(p.deleted) ORDER BY p.projectid DESC');
       } else if (user.operation === 'projetos-disciplina') {
-<<<<<<< Updated upstream
-        result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE p.subjectid IN (SELECT DISTINCT s.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber INNER JOIN semester s ON s.semesterid = l.semesterid WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
-=======
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM project p LEFT JOIN subject s ON p.subjectid = s.subjectid LEFT JOIN common_user cu ON p.userid = cu.userid WHERE not(p.deleted) and p.subjectid IN (SELECT DISTINCT l.subjectid FROM professor prof INNER JOIN lectures l ON prof.regnumber = l.regnumber WHERE prof.userid = $1) ORDER BY p.projectid DESC', [user.userId]);
->>>>>>> Stashed changes
       } else {
         result = db.query('SELECT p.projectid, p.name, p.expectedresult, p.status, p.createdat, s.name AS subject, cu.fullname FROM PROJECT p LEFT JOIN subject s on p.subjectid = s.subjectid LEFT JOIN common_user cu on p.userid = cu.userid WHERE not(p.deleted) and p.userid = $1 ORDER BY p.projectid DESC', [user.userId]);
       }
@@ -20,6 +16,7 @@ module.exports = {
         resolve(response.rows);
       }).catch((response) => {
         reject(response);
+
       });
     });
   },

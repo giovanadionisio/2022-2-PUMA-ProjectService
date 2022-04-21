@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-str */
 const db = require('../../dbconfig/dbConfig');
 
 module.exports = {
@@ -11,12 +12,41 @@ module.exports = {
     }).catch((e) => reject(e));
   }),
 
-  getSubject: (subjectId) => new Promise((resolve, reject) => {
+  getSubject: (input) => new Promise((resolve, reject) => {
+    const { subjectid } = input;
     db.query(
-      'SELECT * FROM SUBJECT WHERE subjectId = $1',
-      [subjectId],
-    ).then((response) => {
-      resolve(response.rows[0]);
-    }).catch((e) => reject(e));
-  })
-}; 
+      'select * from subject sb where sb.subjectid = $1',
+      [subjectid],
+    )
+      .then((response) => {
+        resolve(response.rows[0]);
+      }).catch((response) => {
+        reject(response);
+      });
+  }),
+
+  getSubjects: () => new Promise((resolve, reject) => {
+    db.query('select * from subject sb where not(sb.deleted)')
+      .then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+  }),
+
+  updateSubject: (input) => new Promise((resolve, reject) => {
+    const { subjectid, name, coursesyllabus } = input;
+    db.query(
+      'UPDATE subject \
+        SET name = $1, \
+          coursesyllabus = $2 \
+        WHERE subjectid = $3  RETURNING *',
+      [name, coursesyllabus, subjectid],
+    )
+      .then((response) => {
+        resolve(response.rows[0]);
+      }).catch((response) => {
+        reject(response);
+      });
+  }),
+};
