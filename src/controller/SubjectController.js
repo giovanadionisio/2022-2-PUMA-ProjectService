@@ -33,16 +33,6 @@ module.exports = {
       reject(e);
     }
   }),
-  getSubjetcs: () => {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(subjectRepository.getSubjects());
-      } catch (e) {
-        reject(e);
-      }
-      resolve();
-    });
-  },
 
   getKeywords: () => new Promise(async (resolve, reject) => {
     try {
