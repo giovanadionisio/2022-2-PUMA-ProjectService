@@ -37,7 +37,9 @@ module.exports = {
   }),
 
   addKeywordSubjectRelation: (input) => new Promise((resolve, reject) => {
-    const { keywordid, subjectid } = input;
+
+    keywordid = input.body.keywordid;
+    subjectid = input.body.subjectid;
     db.query(
       'INSERT INTO summarize(keywordid, subjectid) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],
@@ -57,7 +59,7 @@ module.exports = {
   getKeywordsAlternative: () => {
     return new Promise((resolve, reject) => {
       db.query(
-        'SELECT k.keywordid, k.keyword, s.name FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true;',
+        'SELECT k.keywordid, k.keyword, s.name as subjectname, s.subjectid FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true ORDER BY k.keywordid;',
       ).then((response) => {
         resolve(response.rows);
       }).catch((response) => {
@@ -65,6 +67,19 @@ module.exports = {
       });
     });
   },
+
+  getSubjects: () => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT subjectId as value, name as text FROM subject;',
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
+  },
+
 
   updateKeyword:(keywordid, newKeyword) => {
     try {
@@ -115,5 +130,28 @@ module.exports = {
     }
   },
 
+  
+  updateSubjectKeyword:(keywordid, subjectid) => {
+    try {
+
+      return new Promise((resolve, reject) => {
+        db.query(
+          'UPDATE public.summarize SET keywordid = $1, subjectid=$2 WHERE keywordid = $1 RETURNING *;',
+          [keywordid, subjectid]
+
+        ).then((response) => { 
+            console.log(response);
+            resolve(response.rows);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      });
+    } catch (e) {
+      
+      reject(e);
+
+    }
+  },
 
 };

@@ -159,7 +159,7 @@ routes.get('/palavra-chave2', (req, res) => {
 routes.post('/palavra-chave', (req, res) => { // Falta tratamento dos dados
 
   projectController.addKeyword(req.body).then((response) => {
-    res.status(200).json({ 'deu bom': response });
+    res.status(200).json({ response });
   }).catch((e) => {
     res.status(400).json({ 'chorando': e});
   });
@@ -175,6 +175,17 @@ routes.put('/palavra-chave/edit', (req, res) => {
   });
 });
   
+
+// Body necessita do id do subject
+routes.put('/subject/keyword', (req, res) => {
+  const { body, params } = req;
+  projectController.updateSubjectKeyword(parseInt(body.keywordid), parseInt(body.subjectid)).then((response) => {
+    res.status(200).json(response);
+  }).catch((e) => {
+    res.status(400).json({ 'response': body, 'error': e });
+  });
+});
+
 // Parâmetro vai na url devido a deleção ser via update
 routes.put('/palavra-chave/:keywordid/delete', (req, res) => {
   const { body, params } = req;
@@ -186,6 +197,22 @@ routes.put('/palavra-chave/:keywordid/delete', (req, res) => {
   });
 });
 
+routes.get('/subjects', (req, res) => {
+  projectController.getSubjects().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
+
+routes.post('/subject/keyword', (req, res) => { // Falta tratamento dos dados
+  console.log('DEBUGA AE', req.body);
+  projectController.addKeywordSubjectRelation(req).then((response) => {
+    res.status(200).json({ response });
+  }).catch((e) => {
+    res.status(400).json({ 'chorando': e});
+  });
+});
 
 
 routes.get('/project/consulta', () => {

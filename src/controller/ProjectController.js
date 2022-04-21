@@ -101,6 +101,17 @@ module.exports = {
     });
   },
 
+  updateSubjectKeyword: (keywordid, subjectid) => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(keywordRepository.updateSubjectKeyword(keywordid, subjectid));
+      } catch (e) {
+        console.log(e);
+        reject(e);
+      }
+      resolve();
+    });
+  },
 
   deleteKeyword: (keywordid) => {
     return new Promise((resolve, reject) => {
@@ -112,4 +123,29 @@ module.exports = {
       resolve();
     });
   },
+
+  getSubjects: () => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(keywordRepository.getSubjects());
+      } catch (e) {
+        reject(e);
+      }
+      resolve();
+    });
+  },
+
+  addKeywordSubjectRelation: (req) => {
+    return new Promise((resolve, reject) => {
+      try{
+          resolve(keywordRepository.addKeywordSubjectRelation(req)); 
+      } catch (e) { 
+        // console.log(e);
+        reject(e); }
+      resolve();
+     });
+    },
+
+
+    
 };
