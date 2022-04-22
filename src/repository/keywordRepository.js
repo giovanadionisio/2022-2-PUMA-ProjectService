@@ -11,9 +11,7 @@ module.exports = {
     ).then((response) => {
       resolve(response.rows[0]);
     }).catch((e) => {
-      console.log('banco', e);
       reject(e);
-
     });
   }),
 
@@ -63,7 +61,6 @@ module.exports = {
   }),
 
   addKeywordSubjectRelation: (input) => new Promise((resolve, reject) => {
-
     keywordid = input.body.keywordid;
     subjectid = input.body.subjectid;
     db.query(
@@ -91,7 +88,6 @@ module.exports = {
     }).catch((e) => reject(e));
   }),
 
-
   getKeywordsAlternative: () => {
     return new Promise((resolve, reject) => {
       db.query(
@@ -116,77 +112,57 @@ module.exports = {
     });
   },
 
-
-  updateKeyword:(keywordid, newKeyword) => {
+  updateKeyword: (keywordid, newKeyword) => {
     try {
-
       return new Promise((resolve, reject) => {
         db.query(
           // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
           'UPDATE KEYWORD SET keyword = $1 where keywordid = $2 RETURNING *;',
           [newKeyword, keywordid]
 
-        ).then((response) => { 
-            console.log(response);
-            resolve(response.rows);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
       });
     } catch (e) {
-      
       reject(e);
-
     }
   },
 
-  
-  deleteKeyword:(keywordid) => {
+  deleteKeyword: (keywordid) => {
     try {
-
       return new Promise((resolve, reject) => {
         db.query(
           // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
           'UPDATE KEYWORD SET deleted = true where keywordid = $1  RETURNING *;',
           [keywordid]
-
-        ).then((response) => { 
-            console.log(response);
-            resolve(response.rows);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
       });
     } catch (e) {
-      
       reject(e);
-
     }
   },
 
-  
-  updateSubjectKeyword:(keywordid, subjectid) => {
+  updateSubjectKeyword: (keywordid, subjectid) => {
     try {
-
       return new Promise((resolve, reject) => {
         db.query(
           'UPDATE public.summarize SET keywordid = $1, subjectid=$2 WHERE keywordid = $1 RETURNING *;',
           [keywordid, subjectid]
-
-        ).then((response) => { 
-            console.log(response);
-            resolve(response.rows);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
       });
     } catch (e) {
-      
       reject(e);
-
     }
   },
 
@@ -215,8 +191,7 @@ module.exports = {
         on sb.subjectid = sm.subjectid \
         where sb.subjectid = $1 \
       )',
-      [subjectid],
-
+      [subjectid]
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => reject(e));
