@@ -87,7 +87,7 @@ module.exports = {
     },
 
 
-  updateKeyword: (keywordid, newKeyword) => {
+  updateKeywordContent: (keywordid, newKeyword) => {
     return new Promise((resolve, reject) => {
       try {
         console.log('vamo vê');
@@ -101,7 +101,7 @@ module.exports = {
     });
   },
 
-  updateKeywordContent: (keywordid, subjectid) => {
+  updateKeyword: (keywordid, subjectid) => {
     return new Promise((resolve, reject) => {
       try {
         resolve(keywordRepository.updateSubjectKeyword(keywordid, subjectid));
