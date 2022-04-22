@@ -69,6 +69,14 @@ routes.put('/project/reallocate', (req, res) => {
   });
 });
 
+routes.get('/project/keywords', (req, res) => {
+  projectController.getKeywordsAvailbleToProject().then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
 routes.get('/userProposals/:userId', (req, res) => {
   const userId = parseInt(req.params.userId);
   const user = req.query;
@@ -113,23 +121,11 @@ routes.put('/proposal/:projectId', (req, res) => {
   }
 });
 
-routes.get('/project/consulta', () => {
-  db.query('SELECT * FROM PROJECT').then((res) => {
-    res.json(res.rows);
-  });
-});
-
 routes.post('/upload', async (req, res) => {
   projectController.addFile(req.body).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {
     res.status(400).json({ response });
-  });
-});
-
-routes.get('/subject', (req, res) => {
-  db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
-    res.json(response.rows);
   });
 });
 
@@ -141,7 +137,11 @@ routes.get('/areas-conhecimento', (req, res) => {
   });
 });
 
-
+routes.get('/subject', (req, res) => {
+  db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
+    res.json(response.rows);
+  });
+});
 
 routes.get('/project/consulta', () => {
   db.query('SELECT * FROM PROJECT').then((res) => {

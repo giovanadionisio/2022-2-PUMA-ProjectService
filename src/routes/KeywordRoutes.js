@@ -94,12 +94,4 @@ routes.post('/subject/keyword', (req, res) => { // Falta tratamento dos dados
   });
 });
 
-routes.get('/keywords', (req, res) => {
-  keywordController.getKeywordsAvailbleToProject().then((response) => {
-    res.status(200).json(response);
-  }).catch((error) => {
-    res.status(400).json(error);
-  });
-});
-
 module.exports = routes;

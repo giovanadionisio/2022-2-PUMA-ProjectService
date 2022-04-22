@@ -119,7 +119,6 @@ module.exports = {
           // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
           'UPDATE KEYWORD SET keyword = $1 where keywordid = $2 RETURNING *;',
           [newKeyword, keywordid]
-
         ).then((response) => {
           resolve(response.rows);
         }).catch((e) => {
