@@ -51,18 +51,18 @@ routes.put('/project/evaluate', (req, res) => {
   });
 });
 
-// TODO: Falta tratamento dos dados
-routes.delete('/project/delete/:projectId', (req, res) => {
-  projectController.deleteProject(req.params.projectId).then((response) => {
+// TODO: check if the records already exist
+routes.put('/project/reallocate', (req, res) => {
+  projectController.reallocateProject(req.body).then((response) => {
     res.status(200).json(response);
   }).catch((error) => {
     res.status(400).json(error);
   });
 });
 
-// TODO: check if the records already exist
-routes.put('/project/reallocate', (req, res) => {
-  projectController.reallocateProject(req.body).then((response) => {
+// TODO: Falta tratamento dos dados
+routes.delete('/project/delete/:projectId', (req, res) => {
+  projectController.deleteProject(req.params.projectId).then((response) => {
     res.status(200).json(response);
   }).catch((error) => {
     res.status(400).json(error);

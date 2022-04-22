@@ -1,10 +1,10 @@
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-use-before-define */
 const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
 const subareaRepository = require('../repository/subareaRepository');
+const projectRepository = require('../repository/projectRepository');
 const professorRepository = require('../repository/professorRepository');
 
 module.exports = {
@@ -47,6 +47,26 @@ module.exports = {
   getSubareas: () => new Promise(async (resolve, reject) => {
     try {
       const response = await subareaRepository.getSubareas();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  getSubjects: () => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subjectRepository.getSubjects();
+      resolve(response);
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  }),
+
+  deleteSubject: (subjectId) => new Promise(async (resolve, reject) => {
+    try {
+      const response = await subjectRepository.deleteSubject(subjectId);
       resolve(response);
     } catch (e) {
       console.log(e);

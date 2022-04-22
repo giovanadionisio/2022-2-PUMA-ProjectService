@@ -11,6 +11,22 @@ routes.post('/subject', (req, res) => {
   });
 });
 
+routes.get('/subject', (req, res) => {
+  subjectController.getSubjects().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json(response);
+  });
+});
+
+routes.delete('/subject/:subjectId', (req, res) => {
+  subjectController.deleteSubject(req.params.subjectId).then((response) => {
+    res.status(200).json(response.data);
+  }).catch((error) => {
+    res.status(400).json({ error });
+  });
+});
+
 routes.get('/subject/keywords', (req, res) => {
   subjectController.getKeywords().then((response) => {
     res.status(200).json(response);
