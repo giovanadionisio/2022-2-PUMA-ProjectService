@@ -1,3 +1,4 @@
+
 // eslint-disable-next-line import/no-unresolved
 const express = require('express');
 
@@ -13,18 +14,67 @@ routes.get('/', (req, res) => {
   });
 });
 
-routes.get('/alocated/:subjectId', (req, res) => {
-  const subjectId = parseInt(req.params.subjectId);
+// TODO: Falta tratamento dos dados
+routes.post('/project/create', (req, res) => {
+  projectController.addProject(req.body).then((response) => {
+    res.status(200).json({ response });
+  }).catch((response) => {
+    res.status(400).json({ response });
+  });
+});
 
-  if (functions.checkInt(subjectId)) {
-    db.query("SELECT p.projectId, p.name, p.expectedResult FROM PROJECT p\
-              WHERE p.subjectId = $1 AND p.status = 'Aguardando aprovacao';",
-    [subjectId]).then((response) => {
-      res.status(200).json(response.rows);
-    });
-  } else {
-    res.status(401).json({ satus: 'Fail', message: 'param given is not integer' });
-  }
+// TODO: check if the records already exist
+routes.get('/project/get/:projectId', (req, res) => {
+  const projectId = Number(req.params.projectId);
+  projectController.getProjectData(projectId).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
+// TODO: check if the records already exist
+routes.put('/project/update', (req, res) => {
+  projectController.updateProject(req.body).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
+// TODO: check if the records already exist
+routes.put('/project/evaluate', (req, res) => {
+  projectController.evaluateProject(req.body).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
+// TODO: check if the records already exist
+routes.put('/project/reallocate', (req, res) => {
+  projectController.reallocateProject(req.body).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
+// TODO: Falta tratamento dos dados
+routes.delete('/project/delete/:projectId', (req, res) => {
+  projectController.deleteProject(req.params.projectId).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
+});
+
+routes.get('/project/keywords', (req, res) => {
+  projectController.getKeywordsAvailbleToProject().then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
+  });
 });
 
 routes.get('/userProposals/:userId', (req, res) => {
@@ -34,7 +84,6 @@ routes.get('/userProposals/:userId', (req, res) => {
     projectController.getUserProposals(user).then((response) => {
       res.status(200).json(response);
     }).catch((error) => {
-      console.log(error);
       res.status(400).json(error);
     });
   } else {
@@ -46,51 +95,27 @@ routes.put('/alocate/:proposalId/status', (req, res) => {
   const { proposal } = req.body;
   if ('approved' in proposal) {
     const stats = proposal.approved ? 'Aprovado' : 'Recusado';
-    console.log(`entrei - ${stats}`);
     db.query('UPDATE PROJECT SET status=$1 WHERE projectid = $2',
       [stats, req.params.proposalId]).then((response) => {
-      console.log(response);
-      if (response.rowCount == 0) { res.status(404).json({ message: 'Project not found' }); } else {
-        res.status(201).json({ message: 'Project updated' });
-      }
-    });
+        if (response.rowCount == 0) { res.status(404).json({ message: 'Project not found' }); } else {
+          res.status(201).json({ message: 'Project updated' });
+        }
+      });
   } else {
     res.status(400).json({ status: 'Fail', message: "Request body doesn't match the expected" });
-  }
-});
-
-routes.get('/project/get/:projectId', (req, res) => {
-  const projectId = parseInt(req.params.projectId);
-  if (functions.checkInt(projectId)) {
-    db.query('SELECT p.* FROM PROJECT p WHERE p.projectid = $1',
-    [projectId]).then((response) => {
-      const result = response.rows[0];
-      if (!result) {
-        res.status(400).json({ message: `Projeto de id ${projectId} não encontrado` });
-      } else {
-        db.query('SELECT k.* FROM KEYWORD k JOIN abstracts a on k.keywordid = a.keywordid AND a.projectid = $1', [projectId]).then((response) => {
-          result.keywords = response.rows;
-          res.json(result);
-        });
-      }
-    });
-  } else {
-    res.status = 401;
-    res.json({ satus: 'Fail', message: 'param given is not integer' });
   }
 });
 
 routes.put('/proposal/:projectId', (req, res) => {
   const projId = parseInt(req.params.projectId);
   const subjectId = parseInt(req.body.subjectId);
-
   if (functions.checkInt(projId) && functions.checkInt(subjectId)) {
     db.query('UPDATE PROJECT SET subjectId = $1 WHERE projectId = $2',
       [subjectId, projId]).then((response) => {
-      res.status(200).json({ message: 'Alterado com sucesso' });
-    }).catch((err) => {
-      res.status(400).json(err.message);
-    });
+        res.status(200).json({ message: 'Alterado com sucesso' });
+      }).catch((err) => {
+        res.status(400).json(err.message);
+      });
   } else {
     res.status(400).json({ satus: 'Fail', message: 'param given is not integer' });
   }
@@ -98,22 +123,6 @@ routes.put('/proposal/:projectId', (req, res) => {
 
 routes.post('/upload', async (req, res) => {
   projectController.addFile(req.body).then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
-  });
-});
-
-routes.post('/project/create', (req, res) => { // Falta tratamento dos dados
-  projectController.addProject(req.body).then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
-  });
-});
-
-routes.delete('/project/:projectId', (req, res) => { // Falta tratamento dos dados
-  projectController.deleteProject(req.params.projectId).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {
     res.status(400).json({ response });
@@ -128,11 +137,9 @@ routes.get('/areas-conhecimento', (req, res) => {
   });
 });
 
-routes.get('/palavra-chave', (req, res) => {
-  projectController.getKeywords().then((response) => {
-    res.status(200).json(response);
-  }).catch((response) => {
-    res.status(400).json({ response });
+routes.get('/subject', (req, res) => {
+  db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
+    res.json(response.rows);
   });
 });
 

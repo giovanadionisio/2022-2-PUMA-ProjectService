@@ -19,16 +19,6 @@ module.exports = {
     }).catch((e) => reject(e));
   }),
 
-  deleteSubject: (subjectId) => new Promise((resolve, reject) => {
-    db.query(
-      'UPDATE subject SET deleted = true WHERE subjectid = $1 RETURNING *',
-      [subjectId])
-      .then((response) => {
-        resolve(response.rows);
-      }).catch((response) => {
-      reject(response);
-    });
-  }),
   getSubject: (input) => new Promise((resolve, reject) => {
     const { subjectid } = input;
     db.query(
@@ -36,11 +26,12 @@ module.exports = {
       [subjectid],
     )
       .then((response) => {
-        resolve(response.rows);
+        resolve(response.rows[0]);
       }).catch((response) => {
         reject(response);
       });
   }),
+
   updateSubject: (input) => new Promise((resolve, reject) => {
     const { subjectid, name, coursesyllabus } = input;
     db.query(
@@ -52,6 +43,17 @@ module.exports = {
     )
       .then((response) => {
         resolve(response.rows[0]);
+      }).catch((response) => {
+        reject(response);
+      });
+  }),
+
+  deleteSubject: (subjectId) => new Promise((resolve, reject) => {
+    db.query(
+      'UPDATE subject SET deleted = true WHERE subjectid = $1 RETURNING *',
+      [subjectId])
+      .then((response) => {
+        resolve(response.rows);
       }).catch((response) => {
         reject(response);
       });

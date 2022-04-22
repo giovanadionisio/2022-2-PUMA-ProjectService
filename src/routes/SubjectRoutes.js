@@ -51,6 +51,14 @@ routes.get('/professors', (req, res) => {
   });
 });
 
+routes.get('/subjectList', (req, res) => {
+  subjectController.getSubjects().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json(response);
+  });
+});
+
 routes.get('/subject/:subjectid', (req, res) => {
   subjectController.getSubject({
     subjectid: parseInt(req.params.subjectid, 10),
