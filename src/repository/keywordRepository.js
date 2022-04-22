@@ -10,7 +10,9 @@ module.exports = {
       [keyword],
     ).then((response) => {
       resolve(response.rows[0]);
-    }).catch((e) => reject(e));
+    }).catch((e) => {
+      reject(e);
+    });
   }),
 
   addManyKeywords: (keywords) => new Promise((resolve, reject) => {
@@ -59,7 +61,8 @@ module.exports = {
   }),
 
   addKeywordSubjectRelation: (input) => new Promise((resolve, reject) => {
-    const { keywordid, subjectid } = input;
+    keywordid = input.body.keywordid;
+    subjectid = input.body.subjectid;
     db.query(
       'INSERT INTO summarize(keywordId, subjectId) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],
@@ -84,6 +87,83 @@ module.exports = {
       resolve(response.rows);
     }).catch((e) => reject(e));
   }),
+
+  getKeywordsAlternative: () => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT k.keywordid, k.keyword, s.name as subjectname, s.subjectid FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true ORDER BY k.keywordid;',
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
+  },
+
+  getSubjects: () => {
+    return new Promise((resolve, reject) => {
+      db.query(
+        'SELECT subjectId as value, name as text FROM subject;',
+      ).then((response) => {
+        resolve(response.rows);
+      }).catch((response) => {
+        reject(response);
+      });
+    });
+  },
+
+  updateKeyword: (keywordid, newKeyword) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
+          'UPDATE KEYWORD SET keyword = $1 where keywordid = $2 RETURNING *;',
+          [newKeyword, keywordid]
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
+      });
+    } catch (e) {
+      reject(e);
+    }
+  },
+
+  deleteKeyword: (keywordid) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          // 'UPDATE COMMON_USER SET passwordHash = $1 WHERE email = $2 RETURNING *;',
+          'UPDATE KEYWORD SET deleted = true where keywordid = $1  RETURNING *;',
+          [keywordid]
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
+      });
+    } catch (e) {
+      reject(e);
+    }
+  },
+
+  updateSubjectKeyword: (keywordid, subjectid) => {
+    try {
+      return new Promise((resolve, reject) => {
+        db.query(
+          'UPDATE public.summarize SET keywordid = $1, subjectid=$2 WHERE keywordid = $1 RETURNING *;',
+          [keywordid, subjectid]
+        ).then((response) => {
+          resolve(response.rows);
+        }).catch((e) => {
+          reject(e);
+        });
+      });
+    } catch (e) {
+      reject(e);
+    }
+  },
 
   getKeywordsOfSubject: (input) => new Promise((resolve, reject) => {
     const { subjectid } = input;
@@ -110,8 +190,7 @@ module.exports = {
         on sb.subjectid = sm.subjectid \
         where sb.subjectid = $1 \
       )',
-      [subjectid],
-
+      [subjectid]
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => reject(e));
