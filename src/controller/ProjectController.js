@@ -101,7 +101,7 @@ module.exports = {
     });
   },
 
-  updateKeyword: (keywordid, subjectid) => {
+  updateKeywordContent: (keywordid, subjectid) => {
     return new Promise((resolve, reject) => {
       try {
         resolve(keywordRepository.updateSubjectKeyword(keywordid, subjectid));
