@@ -60,9 +60,8 @@ module.exports = {
     }).catch((e) => reject(e));
   }),
 
-  addKeywordSubjectRelation: (input) => new Promise((resolve, reject) => {
-    keywordid = input.body.keywordid;
-    subjectid = input.body.subjectid;
+  addKeywordSubjectRelation: (payload) => new Promise((resolve, reject) => {
+    const { keywordid, subjectid } = payload;
     db.query(
       'INSERT INTO summarize(keywordId, subjectId) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],
@@ -72,7 +71,7 @@ module.exports = {
 
   getKeywordsAvailbleToProject: () => new Promise((resolve, reject) => {
     db.query(
-      'SELECT DISTINCT k.keywordid, k.keyword FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid',
+      'SELECT DISTINCT k.keywordid, k.keyword FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid WHERE not(k.deleted) and not(s.deleted)',
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => {
@@ -82,7 +81,7 @@ module.exports = {
 
   getKeywordAvailbleToSubject: () => new Promise((resolve, reject) => {
     db.query(
-      'SELECT k.keywordid, k.keyword FROM keyword k LEFT JOIN summarize s ON k.keywordid = s.keywordid WHERE s.keywordid IS NULL',
+      'SELECT k.keywordid, k.keyword FROM keyword k LEFT JOIN summarize s ON k.keywordid = s.keywordid WHERE s.keywordid IS NULL and not(k.deleted)',
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => reject(e));

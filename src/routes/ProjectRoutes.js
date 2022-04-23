@@ -91,36 +91,6 @@ routes.get('/userProposals/:userId', (req, res) => {
   }
 });
 
-routes.put('/alocate/:proposalId/status', (req, res) => {
-  const { proposal } = req.body;
-  if ('approved' in proposal) {
-    const stats = proposal.approved ? 'Aprovado' : 'Recusado';
-    db.query('UPDATE PROJECT SET status=$1 WHERE projectid = $2',
-      [stats, req.params.proposalId]).then((response) => {
-        if (response.rowCount == 0) { res.status(404).json({ message: 'Project not found' }); } else {
-          res.status(201).json({ message: 'Project updated' });
-        }
-      });
-  } else {
-    res.status(400).json({ status: 'Fail', message: "Request body doesn't match the expected" });
-  }
-});
-
-routes.put('/proposal/:projectId', (req, res) => {
-  const projId = parseInt(req.params.projectId);
-  const subjectId = parseInt(req.body.subjectId);
-  if (functions.checkInt(projId) && functions.checkInt(subjectId)) {
-    db.query('UPDATE PROJECT SET subjectId = $1 WHERE projectId = $2',
-      [subjectId, projId]).then((response) => {
-        res.status(200).json({ message: 'Alterado com sucesso' });
-      }).catch((err) => {
-        res.status(400).json(err.message);
-      });
-  } else {
-    res.status(400).json({ satus: 'Fail', message: 'param given is not integer' });
-  }
-});
-
 routes.post('/upload', async (req, res) => {
   projectController.addFile(req.body).then((response) => {
     res.status(200).json({ response });
@@ -134,12 +104,6 @@ routes.get('/areas-conhecimento', (req, res) => {
     res.status(200).json({ response });
   }).catch((response) => {
     res.status(400).json({ response });
-  });
-});
-
-routes.get('/subject', (req, res) => {
-  db.query('SELECT s.subjectId, s.name FROM SUBJECT s;').then((response) => {
-    res.json(response.rows);
   });
 });
 

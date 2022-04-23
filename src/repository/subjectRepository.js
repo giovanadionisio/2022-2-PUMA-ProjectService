@@ -13,7 +13,7 @@ module.exports = {
 
   getSubjects: () => new Promise((resolve, reject) => {
     db.query(
-      'SELECT s.subjectid, s.name FROM subject s WHERE s.deleted = false ORDER BY s.subjectid DESC',
+      'SELECT s.subjectid, s.name FROM subject s WHERE not(s.deleted) ORDER BY s.subjectid DESC',
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => reject(e));
