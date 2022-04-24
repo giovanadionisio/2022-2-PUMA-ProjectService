@@ -43,6 +43,14 @@ routes.get('/subareas', (req, res) => {
   });
 });
 
+routes.get('/knowledgeareas', (req, res) => {
+  subjectController.getKnowledgeAreas().then((response) => {
+    res.status(200).json(response);
+  }).catch((response) => {
+    res.status(400).json(response);
+  });
+});
+
 routes.get('/professors', (req, res) => {
   subjectController.getProfessors().then((response) => {
     res.status(200).json(response);

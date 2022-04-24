@@ -4,7 +4,7 @@
 const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
 const subareaRepository = require('../repository/subareaRepository');
-const projectRepository = require('../repository/projectRepository');
+const knowledgeAreaRepository = require('../repository/knowledgeArea');
 const professorRepository = require('../repository/professorRepository');
 
 module.exports = {
@@ -44,6 +44,21 @@ module.exports = {
         } catch (e) {
             console.log(e);
             reject(e);
+        }
+    }),
+
+
+    getKnowledgeAreas: () => new Promise(async (resolve, reject) => {
+        try {
+            const knowledgeAreas = await knowledgeAreaRepository.getKnowledgeAreas();
+            const subareas = await subareaRepository.getSubareas();
+            const response = knowledgeAreas.map((ka) => ({
+                ...ka,
+                subareas: subareas.filter((s) => s.knowledgeareaid === ka.knowledgeareaid)
+            }));
+            resolve(response);
+        } catch (error) {
+            reject(error)
         }
     }),
 

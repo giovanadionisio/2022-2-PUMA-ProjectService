@@ -10,4 +10,9 @@ module.exports = {
       resolve(response.rows[0].knowledgeAreaId);
     }).catch((e) => reject(e));
   }),
+  getKnowledgeAreas: () => new Promise((resolve, reject) => {
+    db.query('SELECT * FROM KNOWLEDGE_AREA').then((response) => {
+      resolve(response.rows);
+    }).catch((e) => reject(e));
+  }),
 };
