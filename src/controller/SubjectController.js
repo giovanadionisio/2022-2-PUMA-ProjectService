@@ -47,7 +47,6 @@ module.exports = {
         }
     }),
 
-
     getKnowledgeAreas: () => new Promise(async (resolve, reject) => {
         try {
             const knowledgeAreas = await knowledgeAreaRepository.getKnowledgeAreas();
