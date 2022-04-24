@@ -185,31 +185,6 @@ module.exports = {
     });
   },
 
-  addProjectKnowledgeAreasRelation: (projectId, knowledgeAreas) => {
-    const areas = [];
-    let iterations = 0;
-    knowledgeAreas.forEach((area) => {
-      areas.push([area.knowledgeareaid, projectId]);
-    });
-    return new Promise((resolve, reject) => {
-      if (areas.length == 0) {
-        reject({ error: "Missing knowledge areas", severity: "ERROR" });
-      }
-      areas.forEach((area) => {
-        iterations++;
-        db.query(
-          'INSERT INTO has (subAreaId, projectid) VALUES ($1,$2) RETURNING *', [area[0], area[1]],
-        ).then((response) => {
-          if (--iterations == 0) {
-            resolve(response.rows[0]);
-          }
-        }).catch((response) => {
-          reject(response);
-        });
-      });
-    });
-  },
-
   addProjectKeywordsRelation: (projectid, keywords) => {
     return new Promise((resolve, reject) => {
       for (let i = 0; i < keywords.length; i++) {
