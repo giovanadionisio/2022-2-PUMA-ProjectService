@@ -61,9 +61,11 @@ module.exports = {
   }),
 
   addKeywordSubjectRelation: (payload) => new Promise((resolve, reject) => {
-    const { keywordid, subjectid } = payload;
+    keywordid = payload.body.keywordid;
+    subjectid = payload.body.subjectid;
+    // console.log(keywordid, subjectid);
     db.query(
-      'INSERT INTO summarize(keywordId, subjectId) VALUES ($1,$2) RETURNING *',
+      'INSERT INTO summarize(keywordid, subjectid) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],
     ).then((response) => resolve(response.rows[0]))
       .catch((e) => reject(e));
@@ -90,7 +92,7 @@ module.exports = {
   getKeywordsAlternative: () => {
     return new Promise((resolve, reject) => {
       db.query(
-        'SELECT k.keywordid, k.keyword, s.name as subjectname, s.subjectid FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true ORDER BY k.keywordid;',
+        'SELECT k.keywordid, k.keyword, s.name as subjectname, s.subjectid, array_agg(c.userid) FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid and k.deleted is not true inner join lectures l on l.subjectid = s.subjectid inner join professor p on l.regnumber = p.regnumber inner join common_user c on p.userid = c.userid GROUP BY k.keywordid, s.name,s.subjectid ORDER BY k.keywordid;',
       ).then((response) => {
         resolve(response.rows);
       }).catch((response) => {

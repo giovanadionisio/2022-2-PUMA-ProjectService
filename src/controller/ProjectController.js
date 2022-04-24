@@ -2,21 +2,17 @@ const projectRepository = require('../repository/projectRepository');
 const semesterRepository = require('../repository/semesterRepository');
 const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
+const { simplifiedAllocation } = require('../utils/functions');
 
 module.exports = {
   addProject: (project) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const mainKeyword = project.keywords.find((k) => k.main)?.keywordid;
-        const subjectid = await projectRepository.getSubjectByKeyword(mainKeyword);
-
-        const projectid = await projectRepository.addProject({ ...project, subjectid });
-        await projectRepository.addProjectKeywords(projectid, project.keywords);
-
-        resolve({ status: 'OK' });
-      } catch (error) {
-        reject(error);
-      }
+    return new Promise((resolve, reject) => {
+      project.subjectid = simplifiedAllocation(project.keywords).subjectid;
+      projectRepository.addProject(project).then((projectid) => {
+        projectRepository.addProjectKeywordsRelation(projectid, project.keywords).then((response) => {
+          resolve(response);
+        }).catch((e) => reject(e));
+      }).catch((e) => reject(e));
     })
   },
 
