@@ -61,8 +61,7 @@ module.exports = {
   }),
 
   addKeywordSubjectRelation: (payload) => new Promise((resolve, reject) => {
-    keywordid = payload.body.keywordid;
-    subjectid = payload.body.subjectid;
+    const { keywordid, subjectid } = payload;
     db.query(
       'INSERT INTO summarize(keywordid, subjectid) VALUES ($1,$2) RETURNING *',
       [keywordid, subjectid],

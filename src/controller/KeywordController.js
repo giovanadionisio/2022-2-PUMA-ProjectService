@@ -89,10 +89,10 @@ module.exports = {
     });
   },
 
-  addKeywordSubjectRelation: (req) => {
+  addKeywordSubjectRelation: (payload) => {
     return new Promise((resolve, reject) => {
       try {
-        resolve(keywordRepository.addKeywordSubjectRelation(req));
+        resolve(keywordRepository.addKeywordSubjectRelation(payload));
       } catch (e) {
         reject(e);
       }
