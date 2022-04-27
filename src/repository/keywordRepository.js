@@ -27,7 +27,7 @@ module.exports = {
 
   getAllKeywords: () => new Promise((resolve, reject) => {
     db.query(
-      'SELECT * FROM KEYWORD',
+      'SELECT * FROM keyword ORDER BY keywordid DESC',
     ).then((response) => {
       resolve(response.rows);
     }).catch((e) => reject(e));
