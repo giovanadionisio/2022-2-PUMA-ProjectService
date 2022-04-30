@@ -1,5 +1,7 @@
 FROM node:14-alpine
 
+RUN apk update && apk add bash
+
 RUN mkdir /home/node/app/ && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
@@ -28,6 +30,6 @@ ARG env
 
 ENV ENVIRONMENT ${env}
 
-CMD ["npm","run","start"]
+CMD ["./wait-for-it.sh", "db:5432", "--", "npm","run","start"]
 
 EXPOSE 3004
