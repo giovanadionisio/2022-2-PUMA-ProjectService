@@ -3,7 +3,6 @@
 const express = require('express');
 
 const routes = express.Router();
-const db = require('../../dbconfig/dbConfig');
 const functions = require('../utils/functions');
 const projectController = require('../controller/ProjectController');
 
@@ -15,7 +14,7 @@ routes.get('/', (req, res) => {
 });
 
 // TODO: Falta tratamento dos dados
-routes.post('/project/create', (req, res) => {
+routes.post('/project', (req, res) => {
   projectController.addProject(req.body).then((response) => {
     res.status(200).json({ response });
   }).catch((response) => {
@@ -24,17 +23,7 @@ routes.post('/project/create', (req, res) => {
 });
 
 // TODO: check if the records already exist
-routes.get('/project/get/:projectId', (req, res) => {
-  const projectId = Number(req.params.projectId);
-  projectController.getProjectData(projectId).then((response) => {
-    res.status(200).json(response);
-  }).catch((error) => {
-    res.status(400).json(error);
-  });
-});
-
-// TODO: check if the records already exist
-routes.put('/project/update', (req, res) => {
+routes.put('/project', (req, res) => {
   projectController.updateProject(req.body).then((response) => {
     res.status(200).json(response);
   }).catch((error) => {
@@ -54,15 +43,6 @@ routes.put('/project/evaluate', (req, res) => {
 // TODO: check if the records already exist
 routes.put('/project/reallocate', (req, res) => {
   projectController.reallocateProject(req.body).then((response) => {
-    res.status(200).json(response);
-  }).catch((error) => {
-    res.status(400).json(error);
-  });
-});
-
-// TODO: Falta tratamento dos dados
-routes.delete('/project/delete/:projectId', (req, res) => {
-  projectController.deleteProject(req.params.projectId).then((response) => {
     res.status(200).json(response);
   }).catch((error) => {
     res.status(400).json(error);
@@ -91,25 +71,22 @@ routes.get('/userProposals/:userId', (req, res) => {
   }
 });
 
-routes.post('/upload', async (req, res) => {
-  projectController.addFile(req.body).then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
+// TODO: check if the records already exist
+routes.get('/project/:projectId', (req, res) => {
+  const projectId = Number(req.params.projectId);
+  projectController.getProjectData(projectId).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
   });
 });
 
-routes.get('/areas-conhecimento', (req, res) => {
-  projectController.getKnowledgeAreas().then((response) => {
-    res.status(200).json({ response });
-  }).catch((response) => {
-    res.status(400).json({ response });
-  });
-});
-
-routes.get('/project/consulta', () => {
-  db.query('SELECT * FROM PROJECT').then((res) => {
-    res.json(res.rows);
+// TODO: Falta tratamento dos dados
+routes.delete('/project/:projectId', (req, res) => {
+  projectController.deleteProject(req.params.projectId).then((response) => {
+    res.status(200).json(response);
+  }).catch((error) => {
+    res.status(400).json(error);
   });
 });
 

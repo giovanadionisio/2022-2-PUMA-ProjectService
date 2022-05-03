@@ -19,14 +19,6 @@ routes.get('/subject', (req, res) => {
   });
 });
 
-routes.delete('/subject/:subjectId', (req, res) => {
-  subjectController.deleteSubject(req.params.subjectId).then((response) => {
-    res.status(200).json(response.data);
-  }).catch((error) => {
-    res.status(400).json({ error });
-  });
-});
-
 routes.get('/subject/keywords', (req, res) => {
   subjectController.getKeywords().then((response) => {
     res.status(200).json(response);
@@ -59,14 +51,6 @@ routes.get('/professors', (req, res) => {
   });
 });
 
-routes.get('/subjectList', (req, res) => {
-  subjectController.getSubjects().then((response) => {
-    res.status(200).json(response);
-  }).catch((response) => {
-    res.status(400).json(response);
-  });
-});
-
 routes.get('/subject/:subjectid', (req, res) => {
   subjectController.getSubject({
     subjectid: parseInt(req.params.subjectid, 10),
@@ -82,6 +66,14 @@ routes.put('/subject/:subjectid', (req, res) => {
     res.status(200).json(response);
   }).catch((response) => {
     res.status(400).json(response);
+  });
+});
+
+routes.delete('/subject/:subjectid', (req, res) => {
+  subjectController.deleteSubject(req.params.subjectid).then((response) => {
+    res.status(200).json(response.data);
+  }).catch((error) => {
+    res.status(400).json({ error });
   });
 });
 

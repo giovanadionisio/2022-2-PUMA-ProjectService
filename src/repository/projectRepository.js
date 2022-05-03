@@ -1,5 +1,4 @@
 const db = require('../../dbconfig/dbConfig');
-const { response } = require('express');
 
 module.exports = {
   getUserProposals: async (user) => {
@@ -182,23 +181,6 @@ module.exports = {
       }).catch((response) => {
         reject(response);
       });
-    });
-  },
-
-  addProjectKeywordsRelation: (projectid, keywords) => {
-    return new Promise((resolve, reject) => {
-      for (let i = 0; i < keywords.length; i++) {
-        db.query(
-          `INSERT INTO ABSTRACTS(keywordid,projectid,main) VALUES ($1,$2, $3) RETURNING *`,
-          [keywords[i].keywordid, projectid, false], // there are no "main" keywords
-        ).then(() => {
-          if (i === keywords.length - 1) {
-            resolve(projectid);
-          }
-        }).catch((response) => {
-          reject(response);
-        });
-      }
     });
   },
 
