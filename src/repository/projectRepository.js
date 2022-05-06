@@ -15,7 +15,6 @@ module.exports = {
         resolve(response.rows);
       }).catch((response) => {
         reject(response);
-
       });
     });
   },
@@ -61,10 +60,10 @@ module.exports = {
 
   evaluateProject: ({ projectId, status, feedback }) => {
     return new Promise((resolve, reject) => {
-      db.query(`UPDATE PROJECT SET status = $2, feedback = $3 WHERE projectid = $1`,
+      db.query(`UPDATE PROJECT SET status = $2, feedback = $3 WHERE projectid = $1 RETURNING *`,
         [projectId, status, feedback]
       ).then((response) => {
-        resolve({ status: 'OK' });
+        resolve(response.rows[0]);
       }).catch((error) => {
         reject(error);
       });
@@ -73,10 +72,10 @@ module.exports = {
 
   reallocateProject: ({ projectId, status, feedback, subjectId }) => {
     return new Promise((resolve, reject) => {
-      db.query(`UPDATE PROJECT SET status = $2, feedback = $3, subjectid = $4 WHERE projectid = $1`,
+      db.query(`UPDATE PROJECT SET status = $2, feedback = $3, subjectid = $4 WHERE projectid = $1 RETURNING *`,
         [projectId, status, feedback, subjectId]
       ).then((response) => {
-        resolve({ status: 'OK' });
+        resolve(response.rows[0]);
       }).catch((error) => {
         reject(error);
       });
@@ -89,23 +88,22 @@ module.exports = {
         `INSERT INTO PROJECT(name,problem,expectedresult,status,userid,subjectid,createdat) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
         [project.name, project.problem, project.expectedresult, project.status, project.userid, project.subjectid, project.createdat],
       ).then((response) => {
-        resolve(response.rows[0].projectid);
-      }).catch((response) => {
-        reject(response);
+        resolve(response.rows[0]);
+      }).catch((error) => {
+        reject(error);
       });
     });
   },
 
   updateProject: (project) => {
     return new Promise(async (resolve, reject) => {
-      try {
-        const { projectid, subjectid, name, expectedresult, problem } = project;
-        await db.query(`UPDATE PROJECT SET subjectid = $2, name = $3, expectedResult = $4, problem = $5 WHERE projectid = $1`,
-          [projectid, subjectid, name, expectedresult, problem]);
-        resolve({ status: 'OK' });
-      } catch (error) {
-        reject(error);
-      }
+      const { projectid, subjectid, name, expectedresult, problem } = project;
+      db.query(`UPDATE PROJECT SET subjectid = $2, name = $3, expectedResult = $4, problem = $5 WHERE projectid = $1 RETURNING *`,
+        [projectid, subjectid, name, expectedresult, problem]).then((response) => {
+          resolve(response.rows[0]);
+        }).catch((error) => {
+          reject(error);
+        });
     });
   },
 
@@ -121,69 +119,6 @@ module.exports = {
     });
   },
 
-  addFile: (file) => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        'INSERT INTO FILE(filename,bytecontent,projectid) VALUES ($1,$2,$3) RETURNING *',
-        [file.filename, file.bytecontent, file.projectid],
-      ).then((response) => {
-        resolve(response.rows[0].fileid);
-      }).catch((response) => {
-        reject(response);
-      });
-    });
-  },
-
-  retriveProjects: () => {
-    return new Promise((resolve, reject) => {
-      db.query('SELECT * FROM PROJECT')
-        .then((response) => {
-          resolve(response.rows);
-        }).catch((response) => {
-          reject(response);
-        });
-    });
-  },
-
-  retriveProject: (projectid) => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        'SELECT p.name, p.problem,p.expectedresult,p.status FROM PROJECT as p WHERE projectid=$1',
-        [projectid],
-      )
-        .then((response) => {
-          resolve(response.rows);
-        })
-        .catch((response) => {
-          reject(response);
-        });
-    });
-  },
-
-  getKnowledgeAreas: () => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        'SELECT * FROM KNOWLEDGE_AREA',
-      ).then((response) => {
-        resolve(response.rows);
-      }).catch((response) => {
-        reject(response);
-      });
-    });
-  },
-
-  getKeywords: () => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        'SELECT k.keywordid, k.keyword, s.subjectid FROM summarize JOIN subject s ON summarize.subjectid = s.subjectid JOIN keyword k ON summarize.keywordid = k.keywordid',
-      ).then((response) => {
-        resolve(response.rows);
-      }).catch((response) => {
-        reject(response);
-      });
-    });
-  },
-
   addProjectKeywords: (projectId, keywords) => {
     return new Promise((resolve, reject) => {
       for (let i = 0; i < keywords.length; i++) {
@@ -194,8 +129,8 @@ module.exports = {
           if (i === keywords.length - 1) {
             resolve();
           }
-        }).catch((response) => {
-          reject(response);
+        }).catch((error) => {
+          reject(error);
         });
       }
     });

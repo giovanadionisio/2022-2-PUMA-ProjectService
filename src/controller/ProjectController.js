@@ -2,7 +2,6 @@ const projectRepository = require('../repository/projectRepository');
 const semesterRepository = require('../repository/semesterRepository');
 const subjectRepository = require('../repository/subjectRepository');
 const keywordRepository = require('../repository/keywordRepository');
-const { simplifiedAllocation } = require('../utils/functions');
 
 module.exports = {
   addProject: (project) => {
@@ -11,10 +10,10 @@ module.exports = {
         const mainKeyword = project.keywords.find((k) => k.main)?.keywordid;
         const subjectid = await projectRepository.getSubjectByKeyword(mainKeyword);
 
-        const projectid = await projectRepository.addProject({ ...project, subjectid });
-        await projectRepository.addProjectKeywords(projectid, project.keywords);
+        const projectData = await projectRepository.addProject({ ...project, subjectid });
+        await projectRepository.addProjectKeywords(projectData.projectid, project.keywords);
 
-        resolve({ status: 'OK' });
+        resolve({ ...projectData });
       } catch (error) {
         reject(error);
       }
@@ -32,9 +31,11 @@ module.exports = {
 
         User = await projectRepository.getUserData(project.userid);
         Keywords = await keywordRepository.getProjectKeywords(projectId);
+
         if (project.subjectid) {
           Subject = await subjectRepository.getSubject({ subjectid: project.subjectid });
         }
+
         if (project.semesterid) {
           Semester = await semesterRepository.getSemester(project.semesterid);
         }
@@ -55,8 +56,9 @@ module.exports = {
         await projectRepository.removeProjectKeywords(project.projectid);
         await projectRepository.addProjectKeywords(project.projectid, project.keywords);
 
-        await projectRepository.updateProject({ ...project, subjectid });
-        resolve({ status: 'OK' });
+        const projectData = await projectRepository.updateProject({ ...project, subjectid });
+
+        resolve({ ...projectData });
       } catch (error) {
         reject(error);
       }
@@ -66,7 +68,7 @@ module.exports = {
   evaluateProject: (payload) => {
     return new Promise((resolve, reject) => {
       projectRepository.evaluateProject(payload).then((response) => {
-        resolve(response)
+        resolve(response);
       }).catch((e) => reject(e));
     });
   },
@@ -74,7 +76,7 @@ module.exports = {
   reallocateProject: (payload) => {
     return new Promise((resolve, reject) => {
       projectRepository.reallocateProject(payload).then((response) => {
-        resolve(response)
+        resolve(response);
       }).catch((e) => reject(e));
     });
   },
@@ -95,42 +97,11 @@ module.exports = {
     });
   },
 
-  addFile: (file) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const projectId = projectRepository.addFile(file);
-        resolve(projectId);
-      } catch (e) { reject(e); }
-      resolve();
-    })
-  },
-
   getKeywordsAvailbleToProject: () => {
     return new Promise((resolve, reject) => {
       keywordRepository.getKeywordsAvailbleToProject().then((response) => {
         resolve(response);
       }).catch((error) => { reject(error) });
     })
-  },
-
-  getKnowledgeAreas: () => {
-    return new Promise((resolve, reject) => {
-      try {
-        const response = projectRepository.getKnowledgeAreas();
-        resolve(response);
-      } catch (e) { reject(e); }
-      resolve();
-    });
-  },
-
-  getKeywords: () => {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(projectRepository.getKeywords());
-      } catch (e) {
-        reject(e);
-      }
-      resolve();
-    });
   },
 };

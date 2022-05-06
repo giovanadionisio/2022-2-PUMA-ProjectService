@@ -6,9 +6,9 @@
   "scripts": {
     "start-dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "test-debug": "mocha './tests/*/*.test.js' --recursive",
+    "test": "nyc --reporter=cobertura --reporter=html mocha './tests/*/*.test.js' --recursive --reporter mocha-junit-reporter",
     "unitary-test": "nyc --reporter=cobertura --reporter=text mocha './tests/unitaryTests/*.test.js' --reporter mocha-junit-reporter",
-    "debug-test": "mocha './tests/unitaryTests/*.test.js'",
-    "test": "mocha './tests/*/*.Integrationtest.js' --recursive",
     "lint": "./node_modules/.bin/eslint ."
   },
   "repository": {
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Ed-vL/dojo-node-postgre#readme",
   "dependencies": {
     "axios": "^0.26.1",
+    "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -37,6 +38,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
     "mocha": "^9.1.3",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.3"
   }
 }
