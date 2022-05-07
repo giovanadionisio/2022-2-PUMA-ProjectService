@@ -1,22 +1,6 @@
 /* eslint-disable */
 
 module.exports = {
-    USER: {
-        LOGIN: {
-            SUCCESS: {
-                T1: {
-                    email: 'user04@email.com',
-                    password: '123456',
-                }
-            },
-            FAILURE: {
-                T1: {
-                    email: 'user04@email.com',
-                    password: '1234567',
-                }
-            }
-        },
-    },
     PROJECT: {
         REGISTER: {
             SUCCESS: {
