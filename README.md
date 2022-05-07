@@ -1,6 +1,4 @@
 # 2021-1-PUMA-ProjectService
-[![Build Status](https://dev.azure.com/puma-eps/Puma/_apis/build/status/ProjectService-CI)](https://dev.azure.com/puma-eps/Puma/_build/latest?definitionId=9)
-![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/puma-eps/Puma/9?style=flat-square)
 
 ## Objetivo
 
@@ -14,8 +12,10 @@ Para utilizar o projeto com todos os microsserviços, siga as intruções de com
 
 ``` $ sudo docker run -p 3000:3000 userservice ```
 
-Para rodar os testes unitários, execute:
+Para rodar os testes, execute:
 
-``` $ sudo make test ```
+``` $ sudo make test```
 
-É necessário preencher o arquivo .env na raiz com as informações necessárias
+``` $ sudo make test-debug```
+
+É necessário preencher o arquivo .env na raiz com as informações necessárias.
