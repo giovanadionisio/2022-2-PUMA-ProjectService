@@ -2,6 +2,8 @@
 
 ## Objetivo
 
+O serviço "Project-Service" foi planejado para lidar com todas as tarefas envolvendo projetos do sistema. Assim, o envio de propostas, o encaminhamento para o professor / disciplina adequada e as possíveis alterações nos projetos seriam todas tarefas para o Project-Service resolver.
+
 Esse serviço é responsável por lidar com todas as operações que envolvem projetos e propostas de projeto no Puma. Interage com o banco de dados ao fazer:
 - Inserts, deletes e consultas em lectures relacionamento entre PROFESSOR e SUBJECT  
 - Consultas em PROFESSOR 
