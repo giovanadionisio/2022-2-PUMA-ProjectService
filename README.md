@@ -144,7 +144,7 @@ Esse endpoint encontra um _project_ por seu id
 /project/:projectId
 ```
 
-### Deletar Projeto
+### Deletar Project
 
 Esse endpoint deleta um _project_ por seu id
 
@@ -152,6 +152,101 @@ Esse endpoint deleta um _project_ por seu id
 ```
 /project/:projectId
 ```
+
+### Adicionar Subject
+
+Esse endpoint adiciona um _subject_
+
+#### POST 
+```
+/subject
+body: {
+  subject: <subject>,
+  keywords: <keywords>,
+  subareas: <subareas>,
+  professors: <professors>
+ }
+```
+
+### Coletar Subject 
+
+Esse endpoint coleta um _subject_
+
+#### GET 
+```
+/subject
+body: {subjectid : <id_subject>}
+```
+
+### Coletar Subject 
+
+Esse endpoint coleta um _subject_ pelo id
+
+#### GET 
+```
+/subject/:subjectid
+```
+
+### Coletar Keywords 
+
+Esse endpoint coleta _keywords_ disponiveis para o _subject_
+
+#### GET 
+```
+/subject/keywords
+```
+
+### Coletar Subareas 
+
+Esse endpoint coleta _subareas_ 
+
+#### GET 
+```
+/subareas
+```
+
+### Coletar Knowledgeareas 
+
+Esse endpoint coleta _knowledgeareas_ 
+
+#### GET 
+```
+/knowledgeareas
+```
+
+### Coletar Professors 
+
+Esse endpoint coleta _professors_ 
+
+#### GET 
+```
+/professors
+```
+
+### Editar Subject 
+
+Esse endpoint edita um _subject_
+
+#### PUT 
+```
+/subject/:subjectid
+body: {
+  subject: <subject>,
+  keywords: <keywords>,
+  subareas: <subareas>,
+  professors: <professors>
+ }
+```
+
+### Deletar Subject 
+
+Esse endpoint deleta um _subject_
+
+#### DELETE 
+```
+/subject/:subjectid
+```
+
 
 ### Como rodar
 
