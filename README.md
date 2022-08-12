@@ -254,7 +254,7 @@ Para utilizar o projeto com todos os microsserviços, siga as intruções de com
 
 ``` $ sudo docker build -t projectservice -f dev.Dockerfile . ```
 
-``` $ sudo docker run -p 3000:3000 userservice ```
+``` $ sudo docker run -p 3000:3000 projectservice ```
 
 Para rodar os testes, execute:
 
