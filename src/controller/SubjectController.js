@@ -74,6 +74,13 @@ module.exports = {
     getSubjects: () => new Promise(async (resolve, reject) => {
         try {
             const response = await subjectRepository.getSubjects();
+
+            let professors = null;
+            for(let i = 0; i < response.length; i++){
+                professors = await professorRepository.getProfessorsofSubject({"subjectid": response[i].subjectid});
+                response[i]["professors"] = professors;
+            }
+            
             resolve(response);
         } catch (e) {
             console.log(e);
