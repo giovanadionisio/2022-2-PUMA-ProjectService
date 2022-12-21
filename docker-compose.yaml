@@ -1,0 +1,35 @@
+version: "3"
+services:
+    db:
+        image: postgres
+        container_name: db
+        environment:
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_DB: ${DB}
+            DATABASE_URL: ${DB_URL}
+        volumes:
+            - ./dbdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        networks:
+            - puma-network
+    project-microservice:
+        container_name: project-microservice
+        environment:
+            ENVIRONMENT: dev
+        build:
+            context: ../${PROJECT_PATH}/
+            dockerfile: dev.Dockerfile
+        ports:
+            - "3000:3000"
+        depends_on:
+            - db
+        volumes:
+            - ../${PROJECT_PATH}:/app
+            - /app/node_modules
+        networks:
+            - puma-network
+
+networks:
+    puma-network: 
