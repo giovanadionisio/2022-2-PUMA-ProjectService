@@ -14,6 +14,6 @@ RUN npm i nodemon -g
 
 RUN chmod +x ./wait-for-it.sh
 
-CMD ["./wait-for-it.sh", "db:5432", "--", "npm","run","start-dev"]
+CMD ["./wait-for-it.sh", "db-project-dev:5432", "--", "npm","run","start-dev"]
 
 EXPOSE 3000
