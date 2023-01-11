@@ -1,4 +1,4 @@
-# 2022-1-PUMA-ProjectService
+# 2022-2-PUMA-ProjectService
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2022-2-PUMA-UserService&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fga-eps-mds_2022-2-PUMA-ProjectService) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2022-2-PUMA-ProjectService&metric=coverage)] [![npm version](https://img.shields.io/badge/npm--express-v4.17.1-blue)](https://www.npmjs.com/package/express/v/4.17.1)
 
 ## Objetivo
@@ -251,7 +251,7 @@ Esse endpoint deleta um _subject_
 
 ### Como rodar
 
-Para utilizar o projeto com todos os microsserviços, siga as intruções de como rodar no [Api Gateway](https://github.com/fga-eps-mds/2021-1-PUMA-ApiGateway). Para rodar este serviço individualmente, execute:
+Para utilizar o projeto com todos os microsserviços, siga as intruções de como rodar no [Api Gateway](https://github.com/fga-eps-mds/2022-2-PUMA-ApiGateway). Para rodar este serviço individualmente, execute:
 
 ``` $ sudo docker build -t projectservice -f dev.Dockerfile . ```
 
